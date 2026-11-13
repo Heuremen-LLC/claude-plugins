@@ -58,7 +58,8 @@ def load_ibm(p):
     Q_ = {}
     for i, qs in enumerate(d.get('qubits', [])):
         Q_[i] = {x['name']: [x.get('value'), x.get('date')] for x in qs if x.get('name') in FIELDS + QUANT}
-    return d.get('backend_name'), d.get('last_update_date'), Q_
+    rest = {k: v for k, v in d.items() if k != 'last_update_date'}   # everything the stamp attests: qubits, gates, general
+    return d.get('backend_name'), d.get('last_update_date'), Q_, hashlib.sha256(json.dumps(rest, sort_keys=True, default=str).encode()).hexdigest()
 def read_time(p):
     b = os.path.basename(p)
     if '__' in b:
@@ -72,9 +73,9 @@ def ibm_index(rdir, out):
         for p in sorted(glob.glob(os.path.join(rdir, '*.json*'))):
             rt = read_time(p)
             if not rt: bad += 1; continue   # no read time: refused (PLAN)
-            try: b, stamp, Qd = load_ibm(p)
+            try: b, stamp, Qd, csha = load_ibm(p)
             except Exception: bad += 1; continue
-            o.write(json.dumps({'file': os.path.basename(p), 'read': rt, 'backend': b, 'stamp': stamp, 'q': Qd}) + '\n'); n += 1
+            o.write(json.dumps({'file': os.path.basename(p), 'read': rt, 'backend': b, 'stamp': stamp, 'content_sha': csha, 'q': Qd}) + '\n'); n += 1
     print(f'indexed {n} records, refused or unreadable {bad}')
 def norm(s):
     try: return dt.datetime.fromisoformat(str(s).replace('Z', '+00:00')).astimezone(dt.timezone.utc)
@@ -151,8 +152,8 @@ def ibm_read(index, since=None, classes=('negative', 'between', 'positive', 'unc
         if in_window(a) or in_window(c): continue
         if since and (norm(c['stamp']) or norm(c['read'])).strftime('%Y-%m-%d') < since: continue
         if a['stamp'] != c['stamp']:
-            allsame = all(a['q'].get(q) == e for q, e in c['q'].items()) and len(a['q']) == len(c['q'])
-            if allsame: obs['FROZEN_RECORD'] += 1
+            if a.get('content_sha') and a.get('content_sha') == c.get('content_sha'): obs['FROZEN_RECORD'] += 1   # every field under the stamp unchanged (qubits, gates, general)
+            elif a['q'] == c['q']: obs['FROZEN_QUBITS_ONLY'] = obs.get('FROZEN_QUBITS_ONLY', 0) + 1   # T1, T2 and readout figures unchanged, other fields (gates, general) moved
         for f in FIELDS + QUANT:
             fd = vc = 0
             for q, e in c['q'].items():
