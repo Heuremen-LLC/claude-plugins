@@ -54,7 +54,7 @@ def check_record(S, Q, qubits):
                 rows.append(dict(qubit=q, check='STALE', field=f, detail=f'measured {when(e[f][1]):%Y-%m-%d %H:%M} UTC, {(S - when(e[f][1])).total_seconds() / 3600:.1f} h before the stamp'))
         for f in ERRS:
             if e.get(f) and e[f][0] == 0: rows.append(dict(qubit=q, check='ZERO', field=f, detail='published value exactly 0'))
-        if t1 and t2 and t1[0] and t2[0] is not None and t1[0] > 0 and len(t1) > 2 and len(t2) > 2 and t1[2] != t2[2]:   # 1.0.1: units must match
+        if t1 and t2 and t1[0] and t2[0] is not None and t1[0] > 0 and len(t1) > 2 and len(t2) > 2 and t1[2] != t2[2]:   # plugin fix 13 Nov 2026: units must match
             rows.append(dict(qubit=q, check='T2>2T1', field='T2/T1', detail=f'units differ ({t1[2]}, {t2[2]}), ratio not formed', outcome='CANNOT_TELL'))
         elif t1 and t2 and t1[0] and t2[0] is not None and t1[0] > 0:
             r = t2[0] / t1[0]
@@ -62,7 +62,7 @@ def check_record(S, Q, qubits):
             if t1[1] and t2[1]:
                 gap = abs((when(t1[1]) - when(t2[1])).total_seconds()) / 3600
                 if gap > 24: rows.append(dict(qubit=q, check='PAIR', field='T1/T2 dates', detail=f'{gap:.1f} h apart'))
-    for r in rows: r['category'] = 'T1 and T2' if r['check'] in ('STALE', 'T2>2T1', 'PAIR') else 'Error figures'   # 1.0.1: two categories
+    for r in rows: r['category'] = 'T1 and T2' if r['check'] in ('STALE', 'T2>2T1', 'PAIR') else 'Error figures'   # plugin fix 13 Nov 2026: two categories
     return rows
 def page(title, meta, sections, inputs):
     css = ('body{font:16px/1.5 Georgia,serif;background:#f6efe2;color:#1c1712;margin:0}main{max-width:900px;margin:0 auto;padding:24px 16px}'
@@ -133,7 +133,7 @@ def main():
             if (r[0], r[1]) in seen: skipped.append(os.path.basename(p) + ' (same stamp as another file)'); continue
             seen.add((r[0], r[1])); recs.append(r + (p,))
         recs.sort(key=lambda r: r[1])
-        bk = sorted({r[0] for r in recs})   # 1.0.1 (13 Nov 2026): records from different backends are never diffed against each other
+        bk = sorted({r[0] for r in recs})   # plugin fix 13 Nov 2026: records from different backends are never diffed against each other
         if a.backend:
             other = [x for x in bk if x != a.backend]; recs = [r for r in recs if r[0] == a.backend]
             if not recs: sys.exit(f'no records from {a.backend} in {a.records} (backends found: {", ".join(bk)})')

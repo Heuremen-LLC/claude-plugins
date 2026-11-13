@@ -5,8 +5,8 @@ description: Check an IBM Quantum backend calibration record (Qiskit BackendProp
 
 # QIA calibration check
 
-The checker is `${CLAUDE_PLUGIN_ROOT}/scripts/qia_check.py` (Python 3.9 or later, standard library only; qia-check 1.0.1; until 1.0.1 reaches PyPI,
-`pip install qia-check` installs 1.0.0, which lacks the backend guard and the unit check). It opens the user's files read-only, prints their sha256 before and after, and writes its report to a separate
+The checker is `${CLAUDE_PLUGIN_ROOT}/scripts/qia_check.py` (Python 3.9 or later, standard library only; qia-check 1.0.0 plus a backend guard, a unit check and
+the two categories; `pip install qia-check` 1.0.0 lacks those three until the next PyPI release). It opens the user's files read-only, prints their sha256 before and after, and writes its report to a separate
 folder (default `./heuremen_report/`). Run on saved files, it sends nothing anywhere. Only `--pull` contacts IBM, with the user's own saved
 account, and only when the user asks for it. Never add `--pull` on your own: it spends nothing, but it uses their account.
 

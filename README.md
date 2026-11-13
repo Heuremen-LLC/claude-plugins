@@ -66,7 +66,7 @@ The script also runs on its own: `python3 plugins/readcheck/scripts/readcheck.py
 
 ## qia-calibration
 
-`/qia-check` runs the QIA calibration checker (qia-check 1.0.1; see the note below on PyPI) on IBM Quantum calibration records saved in
+`/qia-check` runs the QIA calibration checker (qia-check 1.0.0 plus three fixes; see the note below) on IBM Quantum calibration records saved in
 Qiskit's BackendProperties format.
 
 Every flag and change is in one of two categories: **T1 and T2** (STALE, T2>2T1, PAIR, T1/T2 changes) and **Error figures** (ZERO,
@@ -78,8 +78,8 @@ readout-error changes).
   A folder that mixes backends is refused unless you name one with `--backend`, so records from different processors are never
   compared as if IBM had recalibrated.
 
-The script is qia-check 1.0.1. Until that reaches PyPI, `pip install qia-check` installs 1.0.0, which lacks the backend guard, the unit
-check and the two report categories.
+The script is qia-check 1.0.0 plus three fixes (a backend guard, a unit check on T2/T1 and the two report categories). The next PyPI
+release will carry them; until then `pip install qia-check` installs 1.0.0 without them.
 
 Your files are opened read-only and their sha256 is printed before and after. Run on saved files, it opens no network connection;
 only `--pull` contacts IBM, with your own saved account. A STALE, ZERO, T2>2T1 or PAIR flag is a flag on a published record, not a
