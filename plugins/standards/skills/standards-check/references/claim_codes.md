@@ -2,7 +2,7 @@
 
 Statuses: **PRESENT**: The test finds the pattern in the released material.; **ABSENT**: The test was run on the needed material and the pattern was not found.; **CANNOT_TELL**: The test cannot be run or finished. One reason from the closed status list is required.; **NOT_APPLICABLE**: The claim has no step, quantity or practice that the entry is about. The entry states when this holds.
 
-CANNOT_TELL reasons (closed list): **NOT_RELEASED**: The material the test needs was not released.; **UNREADABLE**: The material was released and cannot be read.; **METHOD_UNSTATED**: The claim does not state its method well enough for the test to be run.
+CANNOT_TELL status reasons (closed list): **NOT_RELEASED**: The material the test needs was not released.; **UNREADABLE**: The material was released and cannot be read.; **METHOD_UNSTATED**: The claim does not state its method well enough for the test to be run. F7 reads an interval, so it also uses the closed list of outcome reasons from STANDARD.md section 6: **STRADDLES_EDGE**, **TOO_WIDE_TO_RESOLVE**, **NO_INTERVAL_FORMABLE**.
 
 ## F1 Self-built reference
 
