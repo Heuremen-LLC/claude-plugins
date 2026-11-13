@@ -31,3 +31,35 @@ packs: Q,P,O
 - O4: holds: liveness = read.json written with 5,564 readings
 - O5: holds: absolute paths in riders and scripts
 - O6: n/a: the run is CPU only, so no GPU job on any machine
+
+## 2026-11-13 14:10 stampwatch IBM controls v5 (one BH family per class, observations by stamp-gap bin)
+packs: Q,P,O
+- I: holds: same floor window and pair classes as the first run; pairs now in read-time order; 0 duplicates, 0 same-stamp CARRIED, 0 stamp regressions, 0 refused of 9,331
+- II: holds: k counted per pair before any rate; 0 events in every family; nothing netted
+- III: n/a: counts of identical values, no signed readings in this run
+- V: holds: exact binomial with BH per class family (m printed: 12, 12, 5,540), and the exact upper bound against u + 0.05; k-thresholds printed before reading
+- VI: holds: 0 ABOVE; negative 12 CONSISTENT; positive 12 CANNOT_TELL (no date moves); unclassed 484 CONSISTENT and 5,056 CANNOT_TELL
+- R: holds: counts from read_v5.json by the code sha in PLAN_v5; first run's FROZEN_RECORD 1,768 and corrected 0 both recorded here
+- QA: holds: IBM's own per-field dates and values as published; FROZEN_RECORD hashes every field under the stamp
+- QB: n/a: no idle arm, this reads published calibration records only
+- QC: holds: planted 25 of 25 end to end; the kill condition passed without being exercised (0 real events), stated in v5
+- QD: holds: backends are the units; one family per class, never pooled across classes
+- QE: holds: no mechanism named; nothing at 24 h or under is headlined
+- QF: holds: v5 pushed with these numbers; record times from file names and last_update_date
+- QG: holds: referee gets the raw result file and the code, and her code-review fixes are all in this run
+- P1: n/a: the result quotes no source text; it is counts and file names only
+- P2: holds: every number points to witness/ibm_controls_result_v5_20261113.json or ibm_counts_v5_20261113.json
+- P3: holds: field names as IBM publishes them
+- P4: holds: no cause stated
+- P5: holds: exact 95 % Clopper-Pearson intervals
+- P6: holds: summary says 0 flags, 0 FROZEN_RECORD, and that rule 4 is tested on planted cases only
+- P7: n/a: nothing from this run goes to the ledger or the site
+- P8: n/a: nothing rendered; a JSON file in the repository, no site page
+- P9: holds: plain sentences
+- P10: holds: the FROZEN_DATE definition was matched to the plan in this run; both definitions and counts are recorded
+- O1: holds: blind-feed riders registered on the tick bus; this run is a one-off
+- O2: holds: no failures
+- O3: n/a: the run is CPU only (python stdlib), no GPU touched
+- O4: holds: read_v5.json written with 5,564 readings
+- O5: holds: absolute paths in riders, specs and scripts
+- O6: n/a: the run is CPU only, so no GPU job on any machine
