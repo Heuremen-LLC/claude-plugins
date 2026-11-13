@@ -29,7 +29,7 @@
       "name": "qia-calibration",
       "source": "./plugins/qia-calibration",
       "description": "Check the IBM Quantum calibration record a run depends on, before the run and after it. Read-only, standard library only, and measure T1 and T2 together on chosen qubits in one job.",
-      "version": "1.1.0",
+      "version": "1.1.1",
       "category": "research",
       "homepage": "https://indahl.ai/qia"
     },

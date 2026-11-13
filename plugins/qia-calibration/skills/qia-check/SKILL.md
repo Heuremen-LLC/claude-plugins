@@ -5,13 +5,12 @@ description: Check an IBM Quantum backend calibration record (Qiskit BackendProp
 
 # QIA calibration check
 
-The checker is `${CLAUDE_PLUGIN_ROOT}/scripts/qia_check.py` (Python 3.9 or later, standard library only; qia-check 1.0.0 plus a backend guard, a unit check and
-the two categories; `pip install qia-check` 1.0.0 lacks those three until the next PyPI release). It opens the user's files read-only, prints their sha256 before and after, and writes its report to a separate
+The checker is `${CLAUDE_PLUGIN_ROOT}/scripts/qia_check.py` (Python 3.9 or later, standard library only; the same code as `pip install qia-check` 1.0.2). It opens the user's files read-only, prints their sha256 before and after, and writes its report to a separate
 folder (default `./heuremen_report/`). Run on saved files, it sends nothing anywhere. Only `--pull` contacts IBM, with the user's own saved
 account, and only when the user asks for it. Never add `--pull` on your own: it spends nothing, but it uses their account.
 
 The console prints only the paths of two reports: an HTML page for people and a JSON file. Read the JSON file (keys `meta`, `inputs`,
-`flags` before a run; `meta`, `record_at_start`, `records_during`, `changes`, `skipped` after one) and report from it. Confirm that each
+`flags` before a run, each flag with a `category`; `meta`, `record_at_start`, `records_during`, `changes`, `skipped` after one) and report from it. Confirm that each
 input's `sha256_before` equals its `sha256_after`.
 
 ## Two categories
