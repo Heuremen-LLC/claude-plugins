@@ -1,0 +1,10 @@
+{
+  "name": "heuremen",
+  "owner": { "name": "Heuremen LLC", "url": "https://indahl.ai" },
+  "metadata": { "description": "Heuremen LLC plugins: check published claims against our Standards, gate readings with a check block, and check IBM Quantum calibration records before and after a run.", "version": "1.0.0" },
+  "plugins": [
+    { "name": "standards", "source": "./plugins/standards", "description": "Check a paper or claim against the Standards claim codes and return a recount card with quotes, scope and four-state statuses.", "version": "1.0.0", "category": "research", "homepage": "https://indahl.ai/standard" },
+    { "name": "readcheck", "source": "./plugins/readcheck", "description": "Refuse a git commit that adds a reading (results, outcomes) without a complete check block keyed to the Standards recount requirements.", "version": "1.0.0", "category": "research", "homepage": "https://indahl.ai/standard" },
+    { "name": "qia-calibration", "source": "./plugins/qia-calibration", "description": "Check the IBM Quantum calibration record a run depends on, before the run and after it. Read-only, standard library only.", "version": "1.0.0", "category": "research", "homepage": "https://indahl.ai/qia" }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "name": "qia-calibration",
+  "version": "1.0.0",
+  "description": "Check the IBM Quantum calibration record a run depends on, before the run (stale, zero, T2 above 2xT1, split T1/T2 measurements) and after it (which record was in force, what changed). Read-only, standard library only.",
+  "author": { "name": "Heuremen LLC", "url": "https://indahl.ai" },
+  "homepage": "https://indahl.ai/qia",
+  "repository": "https://github.com/Heuremen-LLC/claude-plugins",
+  "license": "SEE LICENSE.txt",
+  "keywords": ["quantum", "ibm-quantum", "qiskit", "calibration", "reproducibility"]
+}
