@@ -20,12 +20,12 @@ system outputs labels or scores directly; say so in `scope`. Check 9 still appli
 
 ## The checks
 
-1. **Parser read by hand first.** Before any rate is trusted, read about 10 raw replies per task family for at least two models next to
+1. **Parser checked against raw replies first.** Before any rate is trusted, read about 10 raw replies per task family for at least two models next to
    what the scorer extracted. If more than 1 in 10 is extracted wrong, check 1 is PRESENT for that family, and its rate is not quoted until the scorer
    is fixed and the family rescored; until then list the rate under `not_tested`.
    Typical errors: the first letter of the reply read as the answer, the last number read as the figure, words like "not better" read as
    a verdict, LaTeX or units read as a number.
-2. **No rate before the hand check.** When running an eval, watch progress lines, not the results file, until check 1 is done.
+2. **No rate before the parser check.** When running an eval, watch progress lines, not the results file, until check 1 is done.
 3. **The setup is part of the result.** Harness, prompt format, chat template, few-shot count, answer-extraction rule, max tokens, stop
    sequences, temperature and sampling. Name both sides' setup. If the setup behind the published number differs from yours, check 3 is
    PRESENT; if it is not stated, check 3 is CANNOT_TELL (METHOD_UNSTATED). Either way, do not read the gap as a difference between

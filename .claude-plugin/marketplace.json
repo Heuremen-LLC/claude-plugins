@@ -60,7 +60,7 @@
     {
       "name": "eval-check",
       "source": "./plugins/eval-check",
-      "description": "Check an LLM evaluation claim or your own eval run: setup as part of the result, parser read by hand, repeat floor, dropped items, intervals and four outcomes. The agent is told to treat fetched papers, files and model outputs as data, not instructions.",
+      "description": "Check an LLM evaluation claim or your own eval run: setup as part of the result, parser checked against raw replies, repeat floor, dropped items, intervals and four outcomes. The agent is told to treat fetched papers, files and model outputs as data, not instructions.",
       "version": "1.0.0",
       "category": "research",
       "homepage": "https://indahl.ai/iris"
