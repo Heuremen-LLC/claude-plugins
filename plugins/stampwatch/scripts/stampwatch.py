@@ -62,10 +62,15 @@ def load_ibm(p):
     rest = {k: v for k, v in d.items() if k != 'last_update_date'}
     return d.get('backend_name'), d.get('last_update_date'), Q_, hashlib.sha256(json.dumps(rest, sort_keys=True, default=str).encode()).hexdigest()
 def read_time(p):
+    """read time from the file name: backend__YYYYmmddTHHMMSS, or backend_YYYY-MM-DD[_HHMM] (day precision when no time is given)"""
     b = os.path.basename(p)
     if '__' in b:
         try: return dt.datetime.strptime(b.split('__')[1][:15], '%Y%m%dT%H%M%S').replace(tzinfo=dt.timezone.utc).isoformat()
         except ValueError: pass
+    m = re.search(r'_(\d{4}-\d{2}-\d{2})(?:_(\d{4}))?\.json', b)
+    if m:
+        t = dt.datetime.strptime(m.group(1) + (m.group(2) or '0000'), '%Y-%m-%d%H%M').replace(tzinfo=dt.timezone.utc)
+        return t.isoformat() + ('' if m.group(2) else '#day')
     return None
 def ibm_index(rdir, out):
     n = 0; refused = []
@@ -98,7 +103,7 @@ def pairs(index):
         L.sort(key=lambda r: r['read']); prev = None
         for r in L:
             if prev is not None:
-                if r['stamp'] == prev['stamp']:
+                if r['stamp'] == prev['stamp'] or (norm(r['stamp']) and norm(r['stamp']) == norm(prev['stamp'])):
                     if r.get('content_sha') == prev.get('content_sha'): obs['duplicates'] += 1; continue
                     obs['carried_same_stamp'] += 1; out.append((b, prev, r, 'same_stamp')); prev = r; continue
                 if norm(r['stamp']) and norm(prev['stamp']) and norm(r['stamp']) < norm(prev['stamp']): obs['stamp_regressions'] += 1; continue
@@ -144,7 +149,7 @@ def outcome(flag, hi, u, n):
     if hi <= u + SIZE: return 'CONSISTENT', None   # worded in output as "bounded below u + 5 %", never "matches the floor"
     return 'CANNOT_TELL', 'TOO_WIDE_TO_RESOLVE'
 def observe(P, skip_window=True):
-    obs = {'FROZEN_RECORD': {}, 'FROZEN_QUBITS_ONLY': {}, 'FROZEN_DATE': {}, 'VALUE_CHANGED_DATE_UNCHANGED': {}, 'unmoved_date_identical_value': 0}
+    obs = {'FROZEN_RECORD': {}, 'FROZEN_QUBITS_ONLY': {}, 'FROZEN_DATE': {}, 'VALUE_CHANGED_DATE_UNCHANGED': {}, 'unmoved_date_identical_value': {}}
     for b, a, c, kind in P:
         if skip_window and (in_window(a) or in_window(c)): continue
         g = gap_bin(gap_h(a, c))
@@ -156,14 +161,14 @@ def observe(P, skip_window=True):
             for q, e in c['q'].items():
                 x = a['q'].get(q, {}).get(f); y = e.get(f)
                 if not x or not y: continue
-                if x[1] == y[1] and x[0] == y[0]: obs['unmoved_date_identical_value'] += 1
+                if x[1] == y[1] and x[0] == y[0] and type(x[0]) == type(y[0]): obs['unmoved_date_identical_value'][f] = obs['unmoved_date_identical_value'].get(f, 0) + 1
                 # FROZEN_DATE per plan: label moved, this field's date and value unchanged, and other fields under the label moved
                 if kind == 'moved' and x[1] == y[1] and x[0] == y[0] and a.get('content_sha') != c.get('content_sha'): fd += 1
                 if x[1] == y[1] and x[0] != y[0]: vc += 1
             if fd: obs['FROZEN_DATE'].setdefault(f, {})[g] = obs['FROZEN_DATE'].get(f, {}).get(g, 0) + fd
             if vc: obs['VALUE_CHANGED_DATE_UNCHANGED'].setdefault(f, {})[g] = obs['VALUE_CHANGED_DATE_UNCHANGED'].get(f, {}).get(g, 0) + vc
     return obs
-def ibm_read(index, P=None, pobs=None, acc=None):
+def ibm_read(index, P=None, pobs=None, acc=None, u_fixed=None):
     if P is None: P, pobs = pairs(index)
     acc = acc if acc is not None else floors(index); ft = floor_table(acc)
     fu = {(r['backend'], r['field']): r['interval'][1] for r in ft if r['moves'] >= MIN_FLOOR}
@@ -176,8 +181,8 @@ def ibm_read(index, P=None, pobs=None, acc=None):
         if in_window(a) or in_window(c) or kind != 'moved': continue
         for f in FIELDS:
             cl, mv = pair_class(a, c, f); n = sum(1 for m, _ in mv if m); k = sum(1 for m, s in mv if m and s); events += k
-            u = fu.get((b, f)) or cross.get(f)
-            reads.append(dict(backend=b, field=f, cls=cl, a=a['file'], b=c['file'], k=k, n=n, u=u, floor='backend' if (b, f) in fu else 'cross'))
+            u = u_fixed if u_fixed is not None else (fu.get((b, f)) or cross.get(f))
+            reads.append(dict(backend=b, field=f, cls=cl, a=a['file'], b=c['file'], k=k, n=n, u=u, floor='fixed' if u_fixed is not None else ('backend' if (b, f) in fu else 'cross')))
     fam = {}
     for cl in CLASSES:
         R = [r for r in reads if r['cls'] == cl]; m = len(R); fam[cl] = m
@@ -220,6 +225,11 @@ def units_of(s, path):
         for u, obj in (getp(v, tail) or {}).items(): out[u] = obj
     return out
 def h(o): return hashlib.sha256(json.dumps(o, sort_keys=True).encode()).hexdigest()
+def parse_read(x):
+    """read time in the collectors' format (20261113T172813Z) or ISO; anything else is refused"""
+    if not x: return None
+    try: return dt.datetime.strptime(str(x), '%Y%m%dT%H%M%SZ').replace(tzinfo=dt.timezone.utc)
+    except ValueError: return norm(x)
 def check_spec(spec):
     if 'units' not in spec or 'label' not in spec or 'content' not in spec: raise ValueError('spec needs units, label and content')
     if bool(spec.get('evidence')) != bool(spec.get('evidence_content')): raise ValueError('evidence and evidence_content go together, or neither')
@@ -227,6 +237,9 @@ def csv_diff(old, new):
     """rows added, removed, changed, columns touched; and whether every changed cell is datetime-shaped"""
     o = list(csv.reader(io.StringIO(old.decode('utf-8', 'replace')))); n = list(csv.reader(io.StringIO(new.decode('utf-8', 'replace'))))
     hdr = n[0] if n else []; so = {tuple(r) for r in o[1:]}; sn = {tuple(r) for r in n[1:]}
+    from collections import Counter
+    if o[:1] == n[:1] and Counter(map(tuple, o[1:])) == Counter(map(tuple, n[1:])):
+        return dict(rows_changed=0, rows_added=0, rows_removed=0, columns_touched=[], datetime_only=False, reorder_only=True)
     rem = so - sn; add = sn - so; changed = 0; cols = set(); only_dt = True
     if len(o) == len(n):
         for a, b in zip(o[1:], n[1:]):
@@ -236,8 +249,8 @@ def csv_diff(old, new):
                     if x != y:
                         cols.add(hdr[i] if i < len(hdr) else str(i))
                         if not (DT.match(x) and DT.match(y)): only_dt = False
-        return dict(rows_changed=changed, rows_added=0, rows_removed=0, columns_touched=sorted(cols), datetime_only=only_dt and changed > 0)
-    return dict(rows_changed=0, rows_added=len(add), rows_removed=len(rem), columns_touched=[], datetime_only=False)
+        return dict(rows_changed=changed, rows_added=0, rows_removed=0, columns_touched=sorted(cols), datetime_only=only_dt and changed > 0, reorder_only=False)
+    return dict(rows_changed=0, rows_added=len(add), rows_removed=len(rem), columns_touched=[], datetime_only=False, reorder_only=False)
 def feed(spec, snaps, store=None):
     """spec: {units: path to a dict of unit -> object, label: path in the unit, content: [paths], evidence: [paths], evidence_content: [paths],
     repeat_floor: true for the first two snapshots as a repeat floor}. snaps: list of dicts with read_at; refused without it."""
@@ -246,25 +259,27 @@ def feed(spec, snaps, store=None):
                evidence_stamp_frozen_content=0, nondeterministic_units=0, dropped=0, nothing_returned=0, carried_list=[])
     good = []
     for s in snaps:
-        if not s.get('read_at'): out['refused_no_read_time'] += 1; continue
-        good.append(s)
-    good.sort(key=lambda s: s['read_at']); out['snapshots'] = len(good)
+        t = parse_read(s.get('read_at')) if isinstance(s, dict) else None
+        if t is None: out['refused_no_read_time'] += 1; continue
+        s['_t'] = t; good.append(s)
+    good.sort(key=lambda s: s['_t']); out['snapshots'] = len(good)
     seq = {}
     for s in good:
         for u, obj in units_of(s, spec['units']).items(): seq.setdefault(u, []).append((s['read_at'], obj))
     out['units'] = len(seq); nondet = set()
-    rf = None
-    if spec.get('repeat_floor') and len(good) >= 2:
-        def tt(x):
-            try: return dt.datetime.strptime(x, '%Y%m%dT%H%M%SZ')
-            except ValueError: return None
-        t0 = good[0]['read_at']; rf = next((g['read_at'] for g in good[1:] if tt(t0) is None or tt(g['read_at']) is None or (tt(g['read_at']) - tt(t0)).total_seconds() >= 300), None)
-        out['repeat_floor_pair'] = [t0, rf]
-    if rf:
-        t1 = rf
-        for u, L in seq.items():
-            a = [o for t, o in L if t == t0]; b = [o for t, o in L if t == t1]
-            if a and b and h([getp(a[0], p) for p in spec['content']]) != h([getp(b[0], p) for p in spec['content']]): nondet.add(u)
+    nondet = set(); floored = None
+    if spec.get('repeat_floor'):
+        t0 = good[0] if good else None
+        rf = next((g for g in good[1:] if (g['_t'] - t0['_t']).total_seconds() >= 300), None) if t0 else None
+        out['repeat_floor_pair'] = [t0['read_at'] if t0 else None, rf['read_at'] if rf else None]
+        floored = set()
+        if rf:
+            for u, L in seq.items():
+                a_ = [o for t, o in L if t == t0['read_at']]; b_ = [o for t, o in L if t == rf['read_at']]
+                if a_ and b_:
+                    floored.add(u)
+                    if h([getp(a_[0], p) for p in spec['content']]) != h([getp(b_[0], p) for p in spec['content']]): nondet.add(u)
+        out['no_repeat_floor'] = len([u for u in seq if u not in floored])   # FIX 2: a unit with no floor pair is excluded from direction B
     out['nondeterministic_units'] = len(nondet)
     for u, L in seq.items():
         for (ta, a), (tb, b) in zip(L, L[1:]):
@@ -278,13 +293,17 @@ def feed(spec, snaps, store=None):
             if la == lb and ca == cb: out['duplicate'] += 1; continue
             out['pairs'] += 1
             if la != lb and ca == cb: out['FROZEN_LABEL_CONTENT'] += 1
-            if ca != cb and la == lb and u not in nondet and (not ev or eca == ecb):
+            if ca != cb and la == lb and (not ev or eca == ecb):
+                if floored is not None and u not in floored: out['excluded_no_floor'] = out.get('excluded_no_floor', 0) + 1; continue
+                if u in nondet: out['excluded_nondeterministic'] = out.get('excluded_nondeterministic', 0) + 1; continue
                 item = dict(unit=u, a=ta, b=tb)
-                if store and spec.get('store_key'):
-                    k = getp(b, spec['store_key']); cur = os.path.join(store, f'{u}.csv.gz'); old = os.path.join(store, f"{u}__{str(getp(a, 'sha256'))[:12]}.csv.gz")
-                    if os.path.exists(cur) and os.path.exists(old):
-                        item['diff'] = csv_diff(gzip.decompress(open(old, 'rb').read()), gzip.decompress(open(cur, 'rb').read()))
-                if item.get('diff', {}).get('datetime_only'): out['CARRIED_datetime_only'] += 1; item['outcome'] = 'CANNOT_TELL'; item['reason'] = 'METHOD_UNSTATED'
+                if store:   # FIX 3: diff a's own bytes against b's own bytes, stored by sha
+                    pa = os.path.join(store, f"{u}__{str(getp(a, 'sha256'))[:12]}.csv.gz"); pb = os.path.join(store, f"{u}__{str(getp(b, 'sha256'))[:12]}.csv.gz")
+                    if os.path.exists(pa) and os.path.exists(pb):
+                        item['diff'] = csv_diff(gzip.decompress(open(pa, 'rb').read()), gzip.decompress(open(pb, 'rb').read()))
+                d = item.get('diff')
+                if spec.get('requires_diff') and d is None: out['CARRIED_no_diff'] = out.get('CARRIED_no_diff', 0) + 1; item['outcome'] = 'CANNOT_TELL'; item['reason'] = 'NOT_RELEASED'
+                elif d and (d.get('datetime_only') or d.get('reorder_only')): out['CARRIED_datetime_only'] += 1; item['outcome'] = 'CANNOT_TELL'; item['reason'] = 'METHOD_UNSTATED'
                 else: out['CARRIED'] += 1
                 out['carried_list'].append(item)
     return out
@@ -338,52 +357,73 @@ def selftest():
     obs = observe(P, skip_window=False)
     check('whole record frozen: FROZEN_RECORD (content_sha)', sum(obs['FROZEN_RECORD'].values()), 1)
     check('FROZEN_DATE needs other fields moved', obs['FROZEN_DATE'].get('T1', {}).get('>24h'), 100)
-    # rule 4 end to end with a planted floor: u = cp(5, 85000) upper for the 20/156 case; u = 0.001 for the single case
-    def run(floor_u):
-        acc = {('syn_backend', f): [0, 0] for f in FIELDS}
-        out = ibm_read(ix, P, pobs, acc=acc)
-        return out
-    acc_u = {('syn_backend', 'T1'): [5, 85000], ('syn_backend', 'T2'): [5, 85000]}
     global WINDOW
     w0 = WINDOW; WINDOW = ('2000-01-01', '2000-01-02')
-    out = ibm_read(ix, P, pobs, acc=acc_u)
-    above = [r for r in out['readings'] if r['field'] == 'T1' and r['k'] == 20]
-    check('20 of 156 identical restamps reads ABOVE (end to end)', above[0]['outcome'] if above else None, 'ABOVE')
-    one = [r for r in out['readings'] if r['field'] == 'T1' and r['k'] == 1]
-    check('single identical restamp at the planted floor is not ABOVE', one[0]['outcome'] != 'ABOVE' if one else None, True)
-    # real-floor single event, both family choices: u ~ 0.00025, n = 156, k = 1 -> p ~ 0.038; unflagged in m = 12 and m = 5,550
+    try:
+        acc_u = {('syn_backend', 'T1'): [5, 85000], ('syn_backend', 'T2'): [5, 85000]}
+        out = ibm_read(ix, P, pobs, acc=acc_u)
+        above = [r for r in out['readings'] if r['field'] == 'T1' and r['k'] == 20]
+        check('20 of 156 identical restamps reads ABOVE (end to end)', above[0]['outcome'] if above else None, 'ABOVE')
+        # single identical restamp in its OWN run at u = 0.001: exact p, family size and outcome (FIX 5)
+        td2 = tempfile.mkdtemp(prefix='sw_single_'); 
+        for d, rt in ((r4, RT(9)), (r5, RT(11))):
+            dd = {k: v for k, v in d.items() if k != '_q'}; open(os.path.join(td2, f'syn_backend__{rt}.json.gz'), 'wb').write(gzip.compress(json.dumps(dd).encode()))
+        ix2 = os.path.join(td2, 'ix.jsonl.gz'); ibm_index(td2, ix2); P2, po2 = pairs(ix2)
+        out2 = ibm_read(ix2, P2, po2, acc={}, u_fixed=0.001)
+        one = [r for r in out2['readings'] if r['field'] == 'T1']
+        check('single restamp, own run, u=0.001: k, n, p, family m, outcome', (one[0]['k'], one[0]['n'], round(one[0]['p'], 4), one[0]['family_m'], one[0]['outcome']) if one else None, (1, 156, 0.1445, 2, 'CONSISTENT'))
+    finally:
+        WINDOW = w0
+    # real-floor single event: BH arithmetic on hand-built families (not end to end): u ~ 0.00025, n = 156
     u = cp(0, 14800)[1]; p1 = sf(1, 156, u)
-    check(f'real floor k=1 (p={p1:.3f}) unflagged with m=12', bh([p1] + [1.0] * 11)[0], False)
-    check('real floor k=1 unflagged with m=5550', bh([p1] + [1.0] * 5549)[0], False)
-    check('real floor k=2 flagged with m=12', bh([sf(2, 156, u)] + [1.0] * 11)[0], True)
-    check('real floor k=2 not flagged with m=5550', bh([sf(2, 156, u)] + [1.0] * 5549)[0], False)
-    WINDOW = w0
+    check(f'BH arithmetic: real floor k=1 (p={p1:.3f}) unflagged with m=12', bh([p1] + [1.0] * 11)[0], False)
+    check('BH arithmetic: real floor k=1 unflagged with m=5550', bh([p1] + [1.0] * 5549)[0], False)
+    check('BH arithmetic: real floor k=2 flagged with m=12', bh([sf(2, 156, u)] + [1.0] * 11)[0], True)
+    check('BH arithmetic: real floor k=2 not flagged with m=5550', bh([sf(2, 156, u)] + [1.0] * 5549)[0], False)
     # rule 5
     s = [(0, 0.33), (1, 0.33), (2, 0.33)]
     check('quantized repeat contradicted by reference', quantized(s, 1 / 3, {1: 0.33, 2: 1.00})[-1][1], 'ABOVE')
     check('quantized repeat agreed by reference', quantized(s, 1 / 3, {1: 0.33, 2: 0.33})[-1][1], 'CONSISTENT')
     check('quantized repeat with no reference', quantized(s, 1 / 3, {})[0][1], 'CANNOT_TELL')
-    # feeds: units, read_at order, refusal, direction A and B, evidence rules, repeat floor, dropped, datetime-only diff
+    # feeds, real read-time format (FIX 1): floor is the first snapshot at least 300 s after the first one
+    T0, T2m, T6m, TL, TL2 = '20261113T180000Z', '20261113T180200Z', '20261113T180600Z', '20261114T000000Z', '20261114T040000Z'
+    it = lambda v, q, va=1, s_='s': {'verified': v, 'quote': q, 'verified_at': va, 'source_sha': s_}
     spec = {'units': 'items', 'label': 'verified', 'content': ['quote'], 'evidence': ['verified_at'], 'evidence_content': ['source_sha'], 'repeat_floor': True}
-    snaps = [{'read_at': '2', 'items': {'x': {'verified': 1, 'quote': 'a', 'verified_at': 1, 'source_sha': 's'}, 'y': {'verified': 1, 'quote': 'p', 'verified_at': 1, 'source_sha': 's'}, 'n': {'verified': 1, 'quote': 'r1', 'verified_at': 1, 'source_sha': 's'}}},
-             {'read_at': '1', 'items': {'x': {'verified': 1, 'quote': 'a', 'verified_at': 1, 'source_sha': 's'}, 'y': {'verified': 1, 'quote': 'p', 'verified_at': 1, 'source_sha': 's'}, 'n': {'verified': 1, 'quote': 'r0', 'verified_at': 1, 'source_sha': 's'}}},
-             {'read_at': '3', 'items': {'x': {'verified': 1, 'quote': 'b', 'verified_at': 1, 'source_sha': 's'}, 'y': {'verified': 2, 'quote': 'p', 'verified_at': 2, 'source_sha': 's'}, 'n': {'verified': 1, 'quote': 'r2', 'verified_at': 1, 'source_sha': 's'}}},
-             {'items': {}}]
+    snaps = [{'read_at': T2m, 'items': {'x': it(1, 'a'), 'y': it(1, 'p'), 'n': it(1, 'CHANGED_AT_2MIN')}},
+             {'read_at': T0, 'items': {'x': it(1, 'a'), 'y': it(1, 'p'), 'n': it(1, 'r0')}},
+             {'read_at': T6m, 'items': {'x': it(1, 'a'), 'y': it(1, 'p'), 'n': it(1, 'r6')}},
+             {'read_at': TL, 'items': {'x': it(1, 'b'), 'y': it(2, 'p', 2), 'n': it(1, 'r9'), 'z': it(1, 'new')}},
+             {'read_at': TL2, 'items': {'x': it(1, 'b'), 'y': it(2, 'p', 2), 'n': it(1, 'r9'), 'z': it(1, 'newer')}},
+             {'read_at': 'yesterday', 'items': {}}, {'items': {}}]
     g = feed(spec, snaps)
-    check('feed: refused snapshot with no read time', g['refused_no_read_time'], 1)
-    check('feed: repeat floor marks the unstable unit', g['nondeterministic_units'], 1)
-    check('feed: direction B per unit (x), unstable unit excluded', g['CARRIED'], 1)
+    check('feed: unparseable or missing read times are refused', g['refused_no_read_time'], 2)
+    check('feed: the 2-minute snapshot is not the floor pair, the 6-minute one is', g['repeat_floor_pair'], [T0, T6m])
+    check('feed: unit that changed across the floor pair is non-deterministic', g['nondeterministic_units'], 1)
+    check('feed: direction B per unit (x)', g['CARRIED'], 1)
+    check('feed: unit that appeared after the floor is excluded from B (z)', (g['no_repeat_floor'], g.get('excluded_no_floor')), (1, 1))
     check('feed: direction A per unit (y label moved, content same)', g['FROZEN_LABEL_CONTENT'], 1)
     check('feed: evidence stamp moved with unchanged evidence content (y)', g['evidence_stamp_frozen_content'], 1)
     try: feed({'units': 'items', 'label': 'v', 'content': ['q'], 'evidence': ['e']}, []); bad = False
     except ValueError: bad = True
     check('feed: spec with evidence but no evidence_content is refused', bad, True)
-    g = feed({'units': 'ds.*.res', 'label': 'lm', 'content': ['sha256']}, [{'read_at': '1', 'ds': {'d1': {'res': {'a': {'lm': 1, 'sha256': 'x'}}}}}, {'read_at': '2', 'ds': {'d1': {'res': {'a': {'lm': 2, 'sha256': 'x'}}}}}])
+    g = feed({'units': 'ds.*.res', 'label': 'lm', 'content': ['sha256']}, [{'read_at': T0, 'ds': {'d1': {'res': {'a': {'lm': 1, 'sha256': 'x'}}}}}, {'read_at': T6m, 'ds': {'d1': {'res': {'a': {'lm': 2, 'sha256': 'x'}}}}}])
     check('feed: wildcard units flatten nested resources, label moved with content frozen', g['FROZEN_LABEL_CONTENT'], 1)
-    g = feed({'units': 'r', 'label': 'lm', 'content': ['sha256']}, [{'read_at': '1', 'r': {'a': {'lm': 1, 'sha256': 'x'}}}, {'read_at': '2', 'r': {'a': {'lm': 1, 'dropped': 'too_large'}}}])
+    g = feed({'units': 'r', 'label': 'lm', 'content': ['sha256']}, [{'read_at': T0, 'r': {'a': {'lm': 1, 'sha256': 'x'}}}, {'read_at': T6m, 'r': {'a': {'lm': 1, 'dropped': 'too_large'}}}])
     check('feed: too_large is dropped, not compared', g['dropped'], 1)
-    d = csv_diff(b'id,updated,val\n1,2026-11-12T03:00:00Z,5\n', b'id,updated,val\n1,2026-11-13T03:00:00Z,5\n')
-    check('csv diff: datetime-only change', (d['datetime_only'], d['columns_touched']), (True, ['updated']))
+    # CKAN-shaped: stored bytes by sha; missing bytes -> CARRIED_no_diff; reordered rows -> reorder_only; datetime-only -> CANNOT_TELL
+    st = tempfile.mkdtemp(prefix='sw_store_')
+    def put(u, b): sh = hashlib.sha256(b).hexdigest(); open(os.path.join(st, f'{u}__{sh[:12]}.csv.gz'), 'wb').write(gzip.compress(b)); return sh
+    A1 = b'id,updated,val\n1,2026-11-12T03:00:00Z,5\n2,2026-11-12T03:00:00Z,6\n'; A2 = b'id,updated,val\n1,2026-11-13T03:00:00Z,5\n2,2026-11-13T03:00:00Z,6\n'
+    B1 = b'id,val\n1,5\n2,6\n'; B2 = b'id,val\n2,6\n1,5\n'; C1 = b'id,val\n1,5\n'; C2 = b'id,val\n1,7\n'
+    sa1, sa2, sb1, sb2, sc1, sc2 = put('dt', A1), put('dt', A2), put('ro', B1), put('ro', B2), put('rv', C1), put('rv', C2)
+    cspec = {'units': 'r', 'label': 'lm', 'content': ['sha256'], 'repeat_floor': True, 'requires_diff': True}
+    rr = lambda dtsha, rosha, rvsha, nsha: {'dt': {'lm': 1, 'sha256': dtsha}, 'ro': {'lm': 1, 'sha256': rosha}, 'rv': {'lm': 1, 'sha256': rvsha}, 'nd': {'lm': 1, 'sha256': nsha}}
+    snaps = [{'read_at': T0, 'r': rr(sa1, sb1, sc1, 'n1')}, {'read_at': T6m, 'r': rr(sa1, sb1, sc1, 'n1')}, {'read_at': TL, 'r': rr(sa2, sb2, sc2, 'n2')}]
+    g = feed(cspec, snaps, st)
+    reasons = sorted((c['unit'], c.get('outcome', 'CARRIED'), c.get('reason')) for c in g['carried_list'])
+    check('ckan: datetime-only diff and reorder-only read CANNOT_TELL (METHOD_UNSTATED); a real value change is CARRIED; no stored bytes is NOT_RELEASED',
+          reasons, [('dt', 'CANNOT_TELL', 'METHOD_UNSTATED'), ('nd', 'CANNOT_TELL', 'NOT_RELEASED'), ('ro', 'CANNOT_TELL', 'METHOD_UNSTATED'), ('rv', 'CARRIED', None)])
+    d = csv_diff(B1, B2); check('csv diff: two rows swapped is reorder_only', d['reorder_only'], True)
     d = csv_diff(b'id,updated,val\n1,2026-11-12,5\n', b'id,updated,val\n1,2026-11-12,6\n')
     check('csv diff: a real value change is not datetime-only', d['datetime_only'], False)
     check('cp(0, 10) upper = 0.3085', round(cp(0, 10)[1], 4), 0.3085)
@@ -397,5 +437,9 @@ if __name__ == '__main__':
     elif a[0] == 'ibm-floor': print(json.dumps(floor_table(floors(a[1])), indent=1))
     elif a[0] == 'ibm-read': print(json.dumps(ibm_read(a[1]), indent=1, default=str))
     elif a[0] == 'feed':
-        spec = json.load(open(a[1])); snaps = [json.load(gzip.open(p, 'rt') if p.endswith('.gz') else open(p)) for p in glob.glob(os.path.join(a[2], '*.json*'))]
-        print(json.dumps(feed(spec, snaps, spec.get('store_dir')), indent=1))
+        spec = json.load(open(a[1])); snaps = []; bad = 0
+        for p in glob.glob(os.path.join(a[2], '*.json*')):
+            try: snaps.append(json.load(gzip.open(p, 'rt') if p.endswith('.gz') else open(p)))
+            except Exception: bad += 1
+        res = feed(spec, snaps, spec.get('store_dir')); res['snapshots_nothing_returned'] = bad
+        print(json.dumps(res, indent=1, default=str))
