@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """stampwatch.py -- Heuremen LLC (https://indahl.ai). Standard library only. Plan: plans/stampwatch/PLAN.md and amendments v2 to v5 in
-github.com/Heuremen-LLC/claude-plugins. Detects a label that stops being bound to the content it attests, in two directions:
+github.com/Heuremen-LLC/indahl.ai (claude-plugins/). Detects a label that stops being bound to the content it attests, in two directions:
 A, the label moves while the content is frozen; B, the content moves while the label is carried. It names no cause.
 
   python3 stampwatch.py selftest                       planted cases, end to end through the same code paths as real data

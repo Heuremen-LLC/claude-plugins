@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """prereg.py -- Heuremen LLC (https://indahl.ai). Standard library plus git. Plan: plans/prereg/PLAN.md and PLAN_v2.md in
-github.com/Heuremen-LLC/claude-plugins. Answers "was the plan written before the first run?" with the git host's own record of the push,
+github.com/Heuremen-LLC/indahl.ai (claude-plugins/). Answers "was the plan written before the first run?" with the git host's own record of the push,
 and "did the plan cover what ran?". No outside timestamp chain is used.
 
   prereg.py seal FILE... [--tolerance 120] [--kind ibm_job|ci_log|wrapper|user_stated] [--commit]

@@ -3,7 +3,7 @@
 Plugins from Heuremen LLC (https://indahl.ai). Each plugin is named `indahl-...`; its section below uses the short name.
 
 ```
-/plugin marketplace add Heuremen-LLC/claude-plugins
+/plugin marketplace add Heuremen-LLC/indahl.ai
 /plugin install indahl-standards@heuremen
 /plugin install indahl-readcheck@heuremen
 /plugin install indahl-qia-calibration@heuremen

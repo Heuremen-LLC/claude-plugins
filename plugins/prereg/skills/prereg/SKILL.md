@@ -6,7 +6,7 @@ description: Seal a research or evaluation plan in git and later show, from the 
 # prereg
 
 Script: `${CLAUDE_PLUGIN_ROOT}/scripts/prereg.py` (Python 3.9 or later and git). Plan and amendments: plans/prereg in
-github.com/Heuremen-LLC/claude-plugins.
+github.com/Heuremen-LLC/indahl.ai (claude-plugins/).
 
 1. **Seal** the plan files: `python3 prereg.py seal PLAN.md analysis.py --tolerance 120 --kind wrapper`. It refuses files with uncommitted
    changes, records each file's git blob and the sha256 of its committed bytes, and writes prereg/seals/SEAL_NNN.json. Adding `--commit`
