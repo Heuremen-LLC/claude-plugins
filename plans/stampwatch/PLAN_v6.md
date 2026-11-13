@@ -40,3 +40,14 @@ HF opens when at least 3 days of snapshots exist. Before reading, the n units an
 direction A near zero, direction B structurally zero; any label-moved, content-frozen case is an observation about the label, and no
 repository is named. CKAN stays held until its real repeat-floor pair (18:03Z and the next collector slot) has been read for
 non-determinism alone.
+
+## v6.1 (after the referee's STANDS on v6, two fixes she named as needing no re-pass)
+
+- norm() refuses a time with no offset (it is never read as this machine's local time); planted: '2026-11-13T18:00:00' is refused.
+- Pairs sort on (read time, stamp), so day-precision reads are ordered by their stamps; such tiebreaks are counted. restamp_check:
+  order_by_stamp_tiebreak 0, stamp_regressions 0, duplicates 2.
+- Reorder-only diffs have their own counter (CARRIED_reorder_only).
+- Folder overlap, before any Q6 pairs are summed: no file of restamp_check is byte-identical to a yo/history file, but 18 of its 23
+  distinct records carry the same backend, stamp and content as a yo/history record. Q6 pairs by backend and both stamps: restamp_check
+  4, yo/history 6, shared 1, distinct 9 (two boston pairs share the start stamp 2026-09-23T16:58:19Z and end at different records).
+- Code sha256 bb46afefc7c8d31ac3e028f8e5c104dd3d6aedd70f682300bd7a73985c3951ba; planted self-test 28 of 28.

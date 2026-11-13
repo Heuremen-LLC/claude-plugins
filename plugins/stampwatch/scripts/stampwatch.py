@@ -83,7 +83,10 @@ def ibm_index(rdir, out):
             o.write(json.dumps({'file': os.path.basename(p), 'read': rt, 'backend': b, 'stamp': stamp, 'content_sha': csha, 'q': Qd}) + '\n'); n += 1
     return dict(indexed=n, refused=refused)
 def norm(s):
-    try: return dt.datetime.fromisoformat(str(s).replace('Z', '+00:00')).astimezone(dt.timezone.utc)
+    """an instant in UTC; a time with no offset is refused (None), never read as this machine's local time"""
+    try:
+        d = dt.datetime.fromisoformat(str(s).split('#')[0].replace('Z', '+00:00'))
+        return None if d.tzinfo is None else d.astimezone(dt.timezone.utc)
     except Exception: return None
 def gap_h(a, b):
     x, y = norm(a['stamp']), norm(b['stamp']); return (y - x).total_seconds() / 3600 if x and y else None
@@ -98,11 +101,13 @@ def pairs(index):
     recs = {}
     for l in gzip.open(index, 'rt'):
         r = json.loads(l); recs.setdefault(r['backend'], []).append(r)
-    out = []; obs = dict(duplicates=0, carried_same_stamp=0, stamp_regressions=0)
+    out = []; obs = dict(duplicates=0, carried_same_stamp=0, stamp_regressions=0, order_by_stamp_tiebreak=0)
+    far = dt.datetime.max.replace(tzinfo=dt.timezone.utc)
     for b, L in recs.items():
-        L.sort(key=lambda r: r['read']); prev = None
+        L.sort(key=lambda r: (r['read'].split('#')[0], norm(r['stamp']) or far)); prev = None   # day-precision ties broken by stamp
         for r in L:
             if prev is not None:
+                if r['read'].split('#')[0] == prev['read'].split('#')[0] and ('#day' in r['read'] or '#day' in prev['read']): obs['order_by_stamp_tiebreak'] += 1
                 if r['stamp'] == prev['stamp'] or (norm(r['stamp']) and norm(r['stamp']) == norm(prev['stamp'])):
                     if r.get('content_sha') == prev.get('content_sha'): obs['duplicates'] += 1; continue
                     obs['carried_same_stamp'] += 1; out.append((b, prev, r, 'same_stamp')); prev = r; continue
@@ -303,7 +308,8 @@ def feed(spec, snaps, store=None):
                         item['diff'] = csv_diff(gzip.decompress(open(pa, 'rb').read()), gzip.decompress(open(pb, 'rb').read()))
                 d = item.get('diff')
                 if spec.get('requires_diff') and d is None: out['CARRIED_no_diff'] = out.get('CARRIED_no_diff', 0) + 1; item['outcome'] = 'CANNOT_TELL'; item['reason'] = 'NOT_RELEASED'
-                elif d and (d.get('datetime_only') or d.get('reorder_only')): out['CARRIED_datetime_only'] += 1; item['outcome'] = 'CANNOT_TELL'; item['reason'] = 'METHOD_UNSTATED'
+                elif d and d.get('reorder_only'): out['CARRIED_reorder_only'] = out.get('CARRIED_reorder_only', 0) + 1; item['outcome'] = 'CANNOT_TELL'; item['reason'] = 'METHOD_UNSTATED'
+                elif d and d.get('datetime_only'): out['CARRIED_datetime_only'] += 1; item['outcome'] = 'CANNOT_TELL'; item['reason'] = 'METHOD_UNSTATED'
                 else: out['CARRIED'] += 1
                 out['carried_list'].append(item)
     return out
@@ -394,9 +400,9 @@ def selftest():
              {'read_at': T6m, 'items': {'x': it(1, 'a'), 'y': it(1, 'p'), 'n': it(1, 'r6')}},
              {'read_at': TL, 'items': {'x': it(1, 'b'), 'y': it(2, 'p', 2), 'n': it(1, 'r9'), 'z': it(1, 'new')}},
              {'read_at': TL2, 'items': {'x': it(1, 'b'), 'y': it(2, 'p', 2), 'n': it(1, 'r9'), 'z': it(1, 'newer')}},
-             {'read_at': 'yesterday', 'items': {}}, {'items': {}}]
+             {'read_at': 'yesterday', 'items': {}}, {'items': {}}, {'read_at': '2026-11-13T18:00:00', 'items': {}}]
     g = feed(spec, snaps)
-    check('feed: unparseable or missing read times are refused', g['refused_no_read_time'], 2)
+    check('feed: unparseable, missing or naive (no offset) read times are refused', g['refused_no_read_time'], 3)
     check('feed: the 2-minute snapshot is not the floor pair, the 6-minute one is', g['repeat_floor_pair'], [T0, T6m])
     check('feed: unit that changed across the floor pair is non-deterministic', g['nondeterministic_units'], 1)
     check('feed: direction B per unit (x)', g['CARRIED'], 1)
