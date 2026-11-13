@@ -64,6 +64,14 @@
       "version": "1.0.0",
       "category": "research",
       "homepage": "https://indahl.ai/iris"
+    },
+    {
+      "name": "prereg",
+      "source": "./plugins/prereg",
+      "description": "Show that a plan was pushed before the first run, from your git host's own push record (no outside timestamp chain), and list what ran that the plan did not cover.",
+      "version": "1.0.0",
+      "category": "research",
+      "homepage": "https://indahl.ai/plugins"
     }
   ]
 }

@@ -11,6 +11,7 @@ Plugins from Heuremen LLC (https://indahl.ai).
 /plugin install indahl-data@heuremen
 /plugin install reproduce@heuremen
 /plugin install eval-check@heuremen
+/plugin install prereg@heuremen
 ```
 
 ## Outside text is treated as data
@@ -137,6 +138,19 @@ reason, judges grading their own labels, paired comparisons, leaks into the prom
 outcome on every number. A PRESENT is one reader's proposal with its evidence, not a confirmed finding and not a verdict on the
 study, the model or its authors. Nothing is run (a model, a harness, a scorer) without your go.
 
+## prereg
+
+`/prereg` seals a plan in git and later shows, from your git host's own record of the push, whether the plan was pushed before the first
+run, and which files that ran the plan did not cover. No outside timestamp chain is used: the witness is the host's push record, never a
+commit date (which anyone can set). Outcomes: BEFORE (the witnessed push precedes the first run in the supplied record, never "any run"),
+AFTER, CANNOT_TELL (too close for two clocks to separate, no host record, or no stated run time). The tolerance and the run-record kind
+are sealed with the plan. Every result names where each time came from; a run time read from the provider (host_read) is not reachable
+yet, since prereg has no command that fetches a job by id. `prereg run` wraps the run and records the files present, including ignored
+and untracked ones; `cover` lists what ran unsealed. The saved witness hash detects accidental change, not deliberate editing (re-witness
+with a live re-fetch). GitHub does not document how long it keeps the activity record: witness right after the push. prereg does not
+show that the run followed the plan, or that the cited plan was the only plan. It never pushes; keep Claude Code's permission prompt on.
+Plan and real cases: plans/prereg.
+
 ## Licenses
 
 These are free to use under the licenses below. They are not open-source licenses.
@@ -151,7 +165,7 @@ These are free to use under the licenses below. They are not open-source license
   NOTICE.txt (in-context use permitted).
 - `indahl-data`: LICENSE.txt (plugin files: use, copy and change with attribution; served data: retrieve, quote and cite with
   attribution, no training) and NOTICE.txt (responses in an AI assistant's context are permitted).
-- `reproduce`: MIT.
+- `reproduce`, `prereg`: MIT.
 - `eval-check`: LICENSE-STANDARD.txt.
 
 Heuremen LLC · https://indahl.ai
