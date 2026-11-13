@@ -20,7 +20,9 @@ github.com/Heuremen-LLC/claude-plugins.
 5. **Verify** sealed files and **cover** the run: `verify SEAL`, `cover SEAL RUN.json`.
 
 Report outcomes in the tool's words: BEFORE means the witnessed push precedes the first run in the supplied record, never that it precedes
-any run. Always give the run time's witness class (host_read, user_file, wrapper, user_stated). CANNOT_TELL (STRADDLES_EDGE) is a real
+any run. Always give the witness class of the push record (host_read for a live fetch, user_file for a record loaded from a file) and of the run
+time (user_file, wrapper, user_stated; host_read for a run time is not reachable yet, since prereg has no command that fetches a job by id).
+A first-output time (a result file's birth) can read AFTER but never BEFORE. CANNOT_TELL (STRADDLES_EDGE) is a real
 answer: the two times are too close for a host clock and a local clock to separate. prereg does not show that the run followed the plan,
 that the cited plan was the only plan, or what a process opened that no record names. The guard against an unwanted push is Claude Code's
 permission prompt for Bash; keep it on.

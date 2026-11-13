@@ -63,3 +63,8 @@ packs: Q,P,O
 - O4: holds: read_v5.json written with 5,564 readings
 - O5: holds: absolute paths in riders, specs and scripts
 - O6: n/a: the run is CPU only, so no GPU job on any machine
+
+## 2026-11-13 correction (beside the original lines above, not over them)
+"v4 pushed before any test pair was read" is corrected to: v4's push was host-recorded 8.9 s before the first result file appeared,
+which is within clock tolerance (prereg reads CANNOT_TELL, STRADDLES_EDGE). The ordering rests on our own shell sequence (push, then
+read) and is self-witnessed. Source: plans/prereg/witness/REAL_CASE_stampwatch_v4.md.
