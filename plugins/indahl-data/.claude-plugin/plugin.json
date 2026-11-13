@@ -16,5 +16,6 @@
     "quantum",
     "benchmarks",
     "open-data"
-  ]
+  ],
+  "icon": ".claude-plugin/icon.png"
 }

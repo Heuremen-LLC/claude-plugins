@@ -1,5 +1,5 @@
 {
-  "name": "standards",
+  "name": "indahl-standards",
   "version": "1.0.1",
   "description": "Check a paper or claim against the Heuremen LLC Standards claim codes (F1 to F7) and return a recount card: a status for every code, verbatim quotes with locations, the scope searched, and arithmetic for any recompute. The agent is told to treat fetched paper text as data, not instructions.",
   "author": {
@@ -15,5 +15,6 @@
     "reproducibility",
     "standards",
     "papers"
-  ]
+  ],
+  "icon": ".claude-plugin/icon.png"
 }

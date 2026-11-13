@@ -1,17 +1,17 @@
 # Heuremen LLC plugins for Claude Code
 
-Plugins from Heuremen LLC (https://indahl.ai).
+Plugins from Heuremen LLC (https://indahl.ai). Each plugin is named `indahl-...`; its section below uses the short name.
 
 ```
 /plugin marketplace add Heuremen-LLC/claude-plugins
-/plugin install standards@heuremen
-/plugin install readcheck@heuremen
-/plugin install qia-calibration@heuremen
-/plugin install darkwave-correction@heuremen
+/plugin install indahl-standards@heuremen
+/plugin install indahl-readcheck@heuremen
+/plugin install indahl-qia-calibration@heuremen
+/plugin install indahl-darkwave@heuremen
 /plugin install indahl-data@heuremen
-/plugin install reproduce@heuremen
-/plugin install eval-check@heuremen
-/plugin install prereg@heuremen
+/plugin install indahl-reproduce@heuremen
+/plugin install indahl-eval-check@heuremen
+/plugin install indahl-prereg@heuremen
 ```
 
 ## Outside text is treated as data

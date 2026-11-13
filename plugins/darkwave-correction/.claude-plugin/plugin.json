@@ -1,5 +1,5 @@
 {
-  "name": "darkwave-correction",
+  "name": "indahl-darkwave",
   "version": "1.1.1",
   "description": "Measure the phase turn on untouched qubits after a mid-circuit readout on IBM Quantum hardware, and add the matching virtual-Z correction to your own circuits. Self-test on the simulator needs no account.",
   "author": {
@@ -15,5 +15,6 @@
     "qiskit",
     "mid-circuit-measurement",
     "error-correction"
-  ]
+  ],
+  "icon": ".claude-plugin/icon.png"
 }
