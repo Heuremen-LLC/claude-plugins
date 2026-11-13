@@ -127,8 +127,8 @@ https://doi.org/10.5281/zenodo.23843468.
 
 ## eval-check
 
-`/eval-check <claim or path>` checks a language-model evaluation claim, or your own eval run, against twelve checks: the parser read by
-hand first, the setup as part of the result, the repeat floor before any comparison, recounts from released files, dropped items by
+`/eval-check <claim or path>` checks a language-model evaluation claim, or your own eval run, against twelve house checks: the parser
+checked against raw replies first, the setup as part of the result, the repeat floor before any comparison, recounts from released files, dropped items by
 reason, judges grading their own labels, paired comparisons, leaks into the prompt, pinned names, aging datasets, and an interval and
 outcome on every number. A PRESENT is one reader's proposal with its evidence, not a confirmed finding and not a verdict on the
 study, the model or its authors. Nothing is run (a model, a harness, a scorer) without your go.
