@@ -69,6 +69,10 @@ The script also runs on its own: `python3 plugins/readcheck/scripts/readcheck.py
 `/qia-check` runs the QIA calibration checker (qia-check 1.0.0 plus three fixes; see the note below) on IBM Quantum calibration records saved in
 Qiskit's BackendProperties format.
 
+`/qia-t1t2` measures T1 and a Hahn-echo T2 on chosen qubits in one job on your own IBM Quantum account and compares the ratio with
+IBM's published pair (the QIA pack's same-job check). `--selftest` needs no device; `--estimate` prints the QPU seconds and submits
+nothing; the paid run (`--yes`) only runs from your own terminal, and Claude cannot start the command on its own.
+
 Every flag and change is in one of two categories: **T1 and T2** (STALE, T2>2T1, PAIR, T1/T2 changes) and **Error figures** (ZERO,
 readout-error changes).
 

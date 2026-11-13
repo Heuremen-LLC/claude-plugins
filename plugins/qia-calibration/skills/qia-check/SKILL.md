@@ -20,8 +20,21 @@ Every flag and change carries a `category`:
 - **T1 and T2**: STALE (T1 or T2 measured more than 24 h before the record's stamp), T2>2T1, PAIR (T1 and T2 measured more than 24 h
   apart), and T1/T2 changes between records.
 - **Error figures**: ZERO (a readout error value of exactly 0) and readout-error changes between records.
-Report them as two groups. To measure T1 and T2 yourself on hardware, in one job, the QIA Calibration Pack has a separate same-job
-check (https://indahl.ai/qia/package); it spends IBM time and is not part of this plugin.
+Report them as two groups.
+
+## Measure T1 and T2 yourself (same job)
+
+`${CLAUDE_PLUGIN_ROOT}/t1t2/run_check.py` measures T1 and a Hahn-echo T2 on the same qubits in one job and compares the ratio with
+IBM's published pair. Read `${CLAUDE_PLUGIN_ROOT}/t1t2/PLAN.md` and README.md first: the rules were committed before the code. Needs
+`pip install -r ${CLAUDE_PLUGIN_ROOT}/t1t2/requirements.txt` (install only with the user's agreement).
+- `--selftest`: planted worlds and ideal circuits, no device, no account. Always offer this first.
+- `--flagged`: lists the qubits flagged right now on indahl.ai/qia (fetches a public JSON file); add `--backend` to pick one.
+- `--backend B --qubits 85,12 --estimate`: signs in with the user's `IBM_QUANTUM_TOKEN` (environment variable, never written or
+  printed), prints the plan and the estimated QPU seconds, submits nothing. A healthy control qubit is added and must pass first.
+- `--yes` submits one paid job on the user's account. It refuses without a terminal attached, so the user runs it themselves. Never
+  add `--yes`; show the exact command and ask them to run it in their own terminal.
+Outcomes per qubit: ABOVE (the whole interval of T2/T1 above 2), CONSISTENT (at or below 2), CANNOT_TELL (contains 2, a fit failed,
+or the control failed), NOTHING_RETURNED. Report the control's result first.
 
 ## Before a run
 
