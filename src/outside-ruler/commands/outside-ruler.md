@@ -1,5 +1,5 @@
 ---
-description: Referee it before it ships
+description: "Referee your own work before it ships: STANDS, MOVES or HOLD"
 argument-hint: "<what to apply it to>"
 ---
 

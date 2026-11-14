@@ -1,6 +1,6 @@
 ---
-description: Fix it beside, not over
-argument-hint: "<the report, draft or design to check>"
+description: "Record a correction beside the original and list the places to update"
+argument-hint: "<the error found and where it was published>"
 ---
 
 Use the correct skill on: $ARGUMENTS

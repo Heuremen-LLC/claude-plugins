@@ -1,7 +1,7 @@
 {
   "name": "indahl-controls",
   "version": "1.0.0",
-  "description": "Audit a study's, benchmark's or check's positive and negative controls before it runs: was each control chosen independently of the value the rule reads, can the rule fire on it at all, and is the hardest known positive reachable under the rule's own limits. Returns a control table and READY, FIX_CONTROLS or CANNOT_TELL. Use when designing an experiment, an eval, a detector or any test whose silence will be read as a result. Nothing is sent outside your session.",
+  "description": "Audit a study's or test's positive and negative controls before it runs. Returns a control table and READY, FIX_CONTROLS or CANNOT_TELL. Use when designing an experiment, an eval or a detector. Runs inside your session.",
   "author": {
     "name": "Heuremen LLC",
     "url": "https://indahl.ai"
@@ -20,7 +20,7 @@
   "interface": {
     "displayName": "Indahl Controls",
     "shortDescription": "Can your test actually fail?",
-    "longDescription": "Audit a study's, benchmark's or check's positive and negative controls before it runs: was each control chosen independently of the value the rule reads, can the rule fire on it at all, and is the hardest known positive reachable under the rule's own limits. Returns a control table and READY, FIX_CONTROLS or CANNOT_TELL. Use when designing an experiment, an eval, a detector or any test whose silence will be read as a result. Nothing is sent outside your session.",
+    "longDescription": "Audit a study's or test's positive and negative controls before it runs. Returns a control table and READY, FIX_CONTROLS or CANNOT_TELL. Use when designing an experiment, an eval or a detector. Runs inside your session.",
     "developerName": "Heuremen LLC",
     "category": "Education & Research",
     "capabilities": [],

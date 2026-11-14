@@ -1,7 +1,7 @@
 {
   "name": "indahl-reproduce",
   "version": "1.0.0",
-  "description": "Recompute an indahl.ai desk headline that has a reproduce kit: fetch the desk's reproduce kit from the public repository, run the kit's own code (kits with included inputs run offline; others fetch their inputs from the original source and verify them by sha256), and check the output against the published sha256. Nothing runs without a go bound to the commit you reviewed.",
+  "description": "Recompute an indahl.ai desk headline with its reproduce kit and check the output against the published sha256. Kits with bundled inputs run offline, others fetch inputs from the original source and verify them by sha256. Nothing runs without your approval of the exact commit.",
   "author": {
     "name": "Heuremen LLC",
     "url": "https://indahl.ai"
@@ -19,7 +19,7 @@
   "interface": {
     "displayName": "Indahl Reproduce",
     "shortDescription": "Rerun an indahl.ai desk kit",
-    "longDescription": "Recompute an indahl.ai desk headline that has a reproduce kit: fetch the desk's reproduce kit from the public repository, run the kit's own code (kits with included inputs run offline; others fetch their inputs from the original source and verify them by sha256), and check the output against the published sha256. Nothing runs without a go bound to the commit you reviewed.",
+    "longDescription": "Recompute an indahl.ai desk headline with its reproduce kit and check the output against the published sha256. Kits with bundled inputs run offline, others fetch inputs from the original source and verify them by sha256. Nothing runs without your approval of the exact commit.",
     "developerName": "Heuremen LLC",
     "category": "Education & Research",
     "capabilities": [],

@@ -1,5 +1,5 @@
 ---
-description: Trace every figure
+description: "Trace every number in a document to its source"
 argument-hint: "<the report, draft or design to check>"
 ---
 

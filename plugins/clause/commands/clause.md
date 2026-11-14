@@ -1,5 +1,5 @@
 ---
-description: The sentence reviewers catch
+description: "Check result sentences for wording that claims more than the comparison showed"
 argument-hint: "<the report, draft or design to check>"
 ---
 

@@ -1,5 +1,5 @@
 ---
-description: Big audits, batched
+description: "Run a check or audit over a job too big for one context window, in batches"
 argument-hint: "<what to apply it to>"
 ---
 

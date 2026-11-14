@@ -1,7 +1,7 @@
 {
   "name": "indahl-spend-cap",
   "version": "1.0.0",
-  "description": "Refuse an agent's tool calls once its session has used the budget you set, in raw tokens or in dollars at your own prices. Reads the session's transcript and its subagents' before every tool call, counts each message once, warns once near the limit and enforces the stricter of your project and home budgets. A refusal, not a kill switch: the call in flight runs past the cap. Nothing is sent outside your session.",
+  "description": "Refuse an agent's tool calls once its session has used the budget you set, in raw tokens or in dollars at your own prices. Counts the session and its subagents, warns once near the limit, and enforces the stricter of your project and home budgets. A refusal, not a kill switch.",
   "author": {
     "name": "Heuremen LLC",
     "url": "https://indahl.ai"

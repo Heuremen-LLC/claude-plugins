@@ -1,7 +1,7 @@
 {
   "name": "indahl-quote-check",
   "version": "1.0.0",
-  "description": "Check every quotation in a draft, article, report or another skill's output against its source, word for word: VERBATIM, ALTERED, PARAPHRASE_IN_QUOTES, MISATTRIBUTED, NOT_FOUND or CANNOT_TELL, with the source text beside it. Use before publishing anything that quotes a person, a document or a paper. Nothing is sent outside your session.",
+  "description": "Check every quotation in a draft, article or report against its source, word for word. Marks each VERBATIM, ALTERED, PARAPHRASE_IN_QUOTES, MISATTRIBUTED, NOT_FOUND or CANNOT_TELL with the source text beside it. Runs inside your session.",
   "author": {
     "name": "Heuremen LLC",
     "url": "https://indahl.ai"

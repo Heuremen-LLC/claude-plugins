@@ -1,5 +1,5 @@
 ---
-description: Can your test actually fail?
+description: "Audit a test's positive and negative controls before it runs"
 argument-hint: "<the report, draft or design to check>"
 ---
 

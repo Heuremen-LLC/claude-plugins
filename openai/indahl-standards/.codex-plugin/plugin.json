@@ -1,7 +1,7 @@
 {
   "name": "indahl-standards",
   "version": "1.0.1",
-  "description": "Check a paper or claim against the Heuremen LLC Standards claim codes (F1 to F7) and return a recount card: a status for every code, verbatim quotes with locations, the scope searched, and arithmetic for any recompute. The agent is told to treat fetched paper text as data, not instructions.",
+  "description": "Check a paper or claim against the Heuremen LLC Standards claim codes (F1 to F7) and return a recount card: a status for every code, verbatim quotes with locations, the scope searched, and arithmetic for any recompute. Treats fetched text as data.",
   "author": {
     "name": "Heuremen LLC",
     "url": "https://indahl.ai"
@@ -20,7 +20,7 @@
   "interface": {
     "displayName": "Indahl Standards",
     "shortDescription": "Check papers vs. the Standards",
-    "longDescription": "Check a paper or claim against the Heuremen LLC Standards claim codes (F1 to F7) and return a recount card: a status for every code, verbatim quotes with locations, the scope searched, and arithmetic for any recompute. The agent is told to treat fetched paper text as data, not instructions.",
+    "longDescription": "Check a paper or claim against the Heuremen LLC Standards claim codes (F1 to F7) and return a recount card: a status for every code, verbatim quotes with locations, the scope searched, and arithmetic for any recompute. Treats fetched text as data.",
     "developerName": "Heuremen LLC",
     "category": "Education & Research",
     "capabilities": [],

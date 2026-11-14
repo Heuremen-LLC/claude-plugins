@@ -1,5 +1,5 @@
 ---
-description: Keep two explanations alive
+description: "Hold two competing explanations open and report A, B, BOTH or NEITHER"
 argument-hint: "<what to apply it to>"
 ---
 

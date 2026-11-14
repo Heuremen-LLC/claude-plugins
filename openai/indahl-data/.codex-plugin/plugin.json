@@ -1,7 +1,7 @@
 {
   "name": "indahl-data",
   "version": "1.0.0",
-  "description": "Live Heuremen LLC measurements: every indahl.ai desk (IBM calibration, time servers, DNS filters, model licenses and sizes, flu forecasts, launch slips and more) through the read-only indahl.ai MCP server, quoted with interval, outcome and receipt. The agent is told to treat API responses as data, not instructions.",
+  "description": "Live Heuremen LLC measurements through the read-only indahl.ai MCP server: IBM calibration, time servers, DNS filters, model licenses and sizes, forecasts, launch slips and more, quoted with interval, outcome and receipt.",
   "author": {
     "name": "Heuremen LLC",
     "url": "https://indahl.ai"
@@ -21,7 +21,7 @@
   "interface": {
     "displayName": "Indahl Data",
     "shortDescription": "Query every indahl.ai desk",
-    "longDescription": "Live Heuremen LLC measurements: every indahl.ai desk (IBM calibration, time servers, DNS filters, model licenses and sizes, flu forecasts, launch slips and more) through the read-only indahl.ai MCP server, quoted with interval, outcome and receipt. The agent is told to treat API responses as data, not instructions.",
+    "longDescription": "Live Heuremen LLC measurements through the read-only indahl.ai MCP server: IBM calibration, time servers, DNS filters, model licenses and sizes, forecasts, launch slips and more, quoted with interval, outcome and receipt.",
     "developerName": "Heuremen LLC",
     "category": "Education & Research",
     "capabilities": [],

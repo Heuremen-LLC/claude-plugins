@@ -1,5 +1,5 @@
 ---
-description: Do the citations say it?
+description: "Check that each citation exists and supports the claim it is cited for"
 argument-hint: "<the report, draft or design to check>"
 ---
 

@@ -1,7 +1,7 @@
 {
   "name": "indahl-clause",
   "version": "1.0.0",
-  "description": "Check the sentences that report a result for wording that claims more than the comparison showed: an item that is wrong on its own described as if the paired comparison moved, a CONSISTENT reported as 'the same', a non-significant difference reported as 'no difference', a cause named where only an association was measured. Returns each sentence with KEEP or REWORD and the exact replacement. Use on results sections, eval write-ups, clinical and product summaries, and press releases. Nothing is sent outside your session.",
+  "description": "Check the sentences that report a result for wording that claims more than the comparison showed. Returns each sentence as KEEP or REWORD with the exact replacement. Use on results sections, eval write-ups and summaries. Runs inside your session.",
   "author": {
     "name": "Heuremen LLC",
     "url": "https://indahl.ai"
@@ -20,7 +20,7 @@
   "interface": {
     "displayName": "Indahl Clause",
     "shortDescription": "The sentence reviewers catch",
-    "longDescription": "Check the sentences that report a result for wording that claims more than the comparison showed: an item that is wrong on its own described as if the paired comparison moved, a CONSISTENT reported as 'the same', a non-significant difference reported as 'no difference', a cause named where only an association was measured. Returns each sentence with KEEP or REWORD and the exact replacement. Use on results sections, eval write-ups, clinical and product summaries, and press releases. Nothing is sent outside your session.",
+    "longDescription": "Check the sentences that report a result for wording that claims more than the comparison showed. Returns each sentence as KEEP or REWORD with the exact replacement. Use on results sections, eval write-ups and summaries. Runs inside your session.",
     "developerName": "Heuremen LLC",
     "category": "Education & Research",
     "capabilities": [],

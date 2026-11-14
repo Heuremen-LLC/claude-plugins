@@ -1,7 +1,7 @@
 {
   "name": "indahl-outside-ruler",
   "version": "1.0.0",
-  "description": "Check your own work against a ruler you did not build before it goes out: a referee pass on the raw material, ten checks drawn from mistakes that cost real corrections, and a STANDS / MOVES / HOLD verdict with exact changes. Nothing is sent outside your session.",
+  "description": "Check your own work against a ruler you did not build before it goes out. Runs a referee pass on the raw material with ten checks and returns STANDS, MOVES (with exact changes) or HOLD. Runs inside your session.",
   "author": {
     "name": "Heuremen LLC",
     "url": "https://indahl.ai"
@@ -20,7 +20,7 @@
   "interface": {
     "displayName": "Indahl Outside Ruler",
     "shortDescription": "Referee it before it ships",
-    "longDescription": "Check your own work against a ruler you did not build before it goes out: a referee pass on the raw material, ten checks drawn from mistakes that cost real corrections, and a STANDS / MOVES / HOLD verdict with exact changes. Nothing is sent outside your session.",
+    "longDescription": "Check your own work against a ruler you did not build before it goes out. Runs a referee pass on the raw material with ten checks and returns STANDS, MOVES (with exact changes) or HOLD. Runs inside your session.",
     "developerName": "Heuremen LLC",
     "category": "Education & Research",
     "capabilities": [],

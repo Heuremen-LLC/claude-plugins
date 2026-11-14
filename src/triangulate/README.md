@@ -1,14 +1,44 @@
-# indahl-triangulate
+# Indahl Triangulate
 
-One question, three independent seats run blind, read item by item. The outcome is one of four (ABOVE, BELOW, CONSISTENT, CANNOT_TELL; or HOLDS, FAILS, SPLIT, CANNOT_TELL for yes/no questions), with what would decide it and a RECEIPT.md holding every seat's answer verbatim.
+`indahl-triangulate`
 
-Heuremen LLC, https://indahl.ai. Source: https://github.com/Heuremen-LLC/indahl.ai/tree/main/claude-plugins/src/triangulate
+Puts one question to three independent seats run blind, then reads where they agree and where they split. Use it when a decision, a claim, a number or a judgment matters enough that one reading is not enough.
+
+## What you get
+
+- One outcome: ABOVE, BELOW, CONSISTENT or CANNOT_TELL, or HOLDS, FAILS, SPLIT or CANNOT_TELL for a yes or no question.
+- What would decide it.
+- A `RECEIPT.md` holding every seat's answer verbatim.
+
+## How to use
+
+Run `/triangulate` followed by what to check. For example:
+
+```
+/triangulate Does the vendor's stated 99.9 percent uptime hold for the last quarter?
+```
+
+## Install
+
+```
+/plugin marketplace add Heuremen-LLC/indahl.ai
+/plugin install indahl-triangulate@heuremen
+```
+
+## Requirements
+
+None. Runs inside Claude Code.
 
 ## Services this plugin contacts
 
 None. It runs inside your session. If the indahl.ai connector (indahl-data) is installed, a seat may read indahl.ai's public data through it.
 
-Privacy: https://indahl.ai/privacy. Terms: https://indahl.ai/terms.
+## Privacy and terms
+
+Privacy: https://indahl.ai/privacy
+Terms: https://indahl.ai/terms
+
+Heuremen LLC, https://indahl.ai. Source: https://github.com/Heuremen-LLC/indahl.ai/tree/main/claude-plugins/src/triangulate
 
 ## Credits
 

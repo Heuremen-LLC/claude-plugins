@@ -1,7 +1,7 @@
 {
   "name": "indahl-source-check",
   "version": "1.0.0",
-  "description": "Check every citation, reference or link in a paper, report, answer or another skill's output: does it exist, does it say what the text claims, which version was read. Marks each SUPPORTS, PARTIAL, CONTRADICTS, SILENT, NOT_FOUND or CANNOT_TELL with the passage that decides it. Use on literature reviews, research memos, AI-written answers with references, and before citing anything you did not read. Nothing is sent outside your session.",
+  "description": "Check every citation, reference or link in a paper, report or answer: does it exist, does it say what the text claims, which version was read. Marks each SUPPORTS, PARTIAL, CONTRADICTS, SILENT, NOT_FOUND or CANNOT_TELL. Runs inside your session.",
   "author": {
     "name": "Heuremen LLC",
     "url": "https://indahl.ai"
@@ -20,7 +20,7 @@
   "interface": {
     "displayName": "Indahl Source Check",
     "shortDescription": "Do the citations say it?",
-    "longDescription": "Check every citation, reference or link in a paper, report, answer or another skill's output: does it exist, does it say what the text claims, which version was read. Marks each SUPPORTS, PARTIAL, CONTRADICTS, SILENT, NOT_FOUND or CANNOT_TELL with the passage that decides it. Use on literature reviews, research memos, AI-written answers with references, and before citing anything you did not read. Nothing is sent outside your session.",
+    "longDescription": "Check every citation, reference or link in a paper, report or answer: does it exist, does it say what the text claims, which version was read. Marks each SUPPORTS, PARTIAL, CONTRADICTS, SILENT, NOT_FOUND or CANNOT_TELL. Runs inside your session.",
     "developerName": "Heuremen LLC",
     "category": "Education & Research",
     "capabilities": [],

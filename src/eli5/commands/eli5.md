@@ -1,5 +1,5 @@
 ---
-description: Explain it like I'm new to this
+description: "Explain anything complex in plain language, keeping the numbers and the uncertainty"
 argument-hint: "<the text, result, file or idea to explain>"
 ---
 

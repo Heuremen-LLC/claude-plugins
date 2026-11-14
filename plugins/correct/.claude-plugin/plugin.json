@@ -1,7 +1,7 @@
 {
   "name": "indahl-correct",
   "version": "1.0.0",
-  "description": "Record a correction beside the original, never over it: what was wrong, who caught it, when, the evidence, the corrected text, and whether every place that cited the original was reached. Produces a corrections ledger entry and a list of downstream places to update. Use when an error is found in anything already published or sent - a paper, a page, a report, a dataset, a message. Nothing is sent outside your session.",
+  "description": "Record a correction beside the original, never over it. Produces a corrections ledger entry and a list of downstream places to update, each marked UPDATED, NOTIFIED, CANNOT_REACH or NOT_NEEDED. Runs inside your session.",
   "author": {
     "name": "Heuremen LLC",
     "url": "https://indahl.ai"

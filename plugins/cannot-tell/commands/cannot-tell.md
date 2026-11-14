@@ -1,5 +1,5 @@
 ---
-description: Say can't-tell, usefully
+description: "Answer \"cannot tell yet\" with the range, the deciding facts and the next step"
 argument-hint: "<what to apply it to>"
 ---
 

@@ -1,7 +1,7 @@
 {
   "name": "indahl-number-check",
   "version": "1.0.0",
-  "description": "Check every number in a report, memo, deck, dashboard or another skill's output against its source: each figure traced, then marked HELD, MOVED, NO_SOURCE or CANNOT_TELL with the source line beside it. Use after any research, finance, analytics or business-report skill, or before sending anything with numbers in it. Nothing is sent outside your session.",
+  "description": "Check every number in a report, memo, deck or dashboard against its source. Each figure is traced and marked HELD, MOVED, NO_SOURCE or CANNOT_TELL with the source line beside it. Runs inside your session.",
   "author": {
     "name": "Heuremen LLC",
     "url": "https://indahl.ai"

@@ -1,8 +1,27 @@
 # Indahl Spend Cap
 
+`indahl-spend-cap`
+
 Agents run up cost quietly: a loop that retries, a subagent fan-out, a long unattended run. This Claude Code plugin adds a hook that runs before every tool call. It reads the session's own transcript and its subagents' transcripts, adds up the tokens recorded there, and refuses the tool call once the session is over the budget you set. The agent is told why and asked to stop and report what is done.
 
 **What it does and does not do.** It refuses tool calls. It does not stop the session. It checks before each tool call, so the call already in flight (a long build, a subagent), any refused retries and the final report all run past the cap. It guards against a runaway loop, not against an agent that edits the budget file to keep going.
+
+## What you get
+
+- A hook that runs before every tool call and counts the session's tokens, including its subagents.
+- A budget in raw tokens or in dollars at your own prices, from `.claude/spend-cap.json` or `~/.claude/spend-cap.json`, with the stricter file winning.
+- One warning when the warn share is first passed, and a refusal with the reason once over the limit.
+- A `report` command that prints the totals for one session.
+
+## How to use
+
+Create a budget file, then work as usual:
+
+```
+{ "max_tokens": 5000000, "warn_at": 0.8 }
+```
+
+Save it as `.claude/spend-cap.json` in the project. With no budget file, the hook does nothing.
 
 ## Set a budget
 
@@ -34,13 +53,6 @@ One price set applies to every model in the session, so a cheaper subagent model
 - Over a limit, the tool call is refused, and the agent gets the reason with the four classes. Seen live, including inside a subagent: the subagent quoted the refusal and told the person how to raise the budget instead of trying to change the file.
 - If the hook cannot read the transcript, the call is allowed, with a visible note that the budget could not be checked.
 
-## Install
-
-```
-/plugin marketplace add Heuremen-LLC/indahl.ai
-/plugin install indahl-spend-cap@heuremen
-```
-
 ## Check it
 
 - `python3 scripts/spend_cap.py report <transcript.jsonl>` prints the totals for one session.
@@ -57,9 +69,33 @@ One price set applies to every model in the session, so a cheaper subagent model
 - It needs a working `python3` or `python` on PATH. On Windows, `python3` is often the Microsoft Store stub, which runs nothing, so the hook command falls back to `python`. If neither runs, tool calls are refused with that reason, so the cap never goes silently off. The fallback was tested by hand in Git Bash on Windows, not yet from a live Windows Claude Code session. The selftest passes on Windows (Python 3.13).
 - Each check reads every transcript file in full. On a session with 126 MB of transcripts it took 0.17 seconds with a warm disk cache, against the hook's 15-second timeout.
 
-Standard library only. Nothing leaves the machine. Heuremen LLC, https://indahl.ai. Refereed before release by Sage, the outside referee on our work. MIT licence.
+## Install
+
+```
+/plugin marketplace add Heuremen-LLC/indahl.ai
+/plugin install indahl-spend-cap@heuremen
+```
+
+## Requirements
+
+Python 3 (`python3`, or `python` on Windows). Standard library only.
+
+## Services this plugin contacts
+
+None. Nothing leaves the machine.
+
+## Privacy and terms
+
+Privacy: https://indahl.ai/privacy
+Terms: https://indahl.ai/terms
+
+Heuremen LLC, https://indahl.ai. Source: https://github.com/Heuremen-LLC/indahl.ai
+
+MIT licence.
 
 ## Credits
+
+Refereed before release by Sage, the outside referee on our work.
 
 Windows fix, 14 Nov 2026: Sage asked, Bones found and fixed. Sage, the outside referee on our work, asked whether `python3` resolves on Windows. Bones ran it on a Windows machine, found it was the Microsoft Store stub that runs nothing (exit 49), so the hook would fail without a word and the check would be silently off, and fixed it in every plugin hook. The hook now falls back to `python`.
 

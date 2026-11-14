@@ -1,13 +1,22 @@
-# indahl-silent-failure-guard
+# Indahl Silent Failure Guard
 
-Quiet is not success. After any action that says it worked, this skill reads the effect back from where it should have landed: the
-commit on the remote, the content of the published file, the rows in the table, the text on the live page, the time of the job's
-newest output. Each action gets one of four outcomes: VERIFIED, FAILED, NOTHING_RETURNED or CANNOT_TELL. It can also scan scripts for
-the patterns that turn failures into silence (output captured and status ignored, swallowed errors, a guard that swaps in a no-op,
-rows dropped without a count, two copies of one truth with nothing comparing them, liveness judged by a process existing, a watcher
-with no heartbeat).
+`indahl-silent-failure-guard`
 
-- `/silent-failure-guard <action or pipeline>`
+After any action that says it worked, this skill reads the effect back from where it should have landed: the commit on the remote, the content of the published file, the rows in the table, the text on the live page, the time of the job's newest output. It can also scan scripts for the patterns that turn failures into silence (output captured and status ignored, swallowed errors, a guard that swaps in a no-op, rows dropped without a count, two copies of one truth with nothing comparing them, liveness judged by a process existing, a watcher with no heartbeat). A hook for Claude Code also refuses background waits that can only report success.
+
+## What you get
+
+- One outcome per action: VERIFIED, FAILED, NOTHING_RETURNED or CANNOT_TELL, with the read-back that decided it.
+- A scan of scripts for the patterns that hide failures.
+- A hook that refuses background Bash waits and Monitor watches that can only report success, and tells the model how to fix them.
+
+## How to use
+
+```
+/silent-failure-guard the deploy script in scripts/ship.sh
+```
+
+The hook needs no command. It runs before every background Bash command and every Monitor.
 
 ## The watch guard for Claude Code (hook)
 
@@ -43,11 +52,27 @@ Built from our own operations record: in three weeks we logged more than a hundr
 reported success over a refused commit, a page that drifted from the library it mirrors, and a scheduler that silently replaced new
 jobs with a no-op.
 
+## Install
+
+```
+/plugin marketplace add Heuremen-LLC/indahl.ai
+/plugin install indahl-silent-failure-guard@heuremen
+```
+
+## Requirements
+
+Python 3 (`python3`, or `python` on Windows) for the hook. The skill needs nothing.
+
 ## Services this plugin contacts
 
 None. It runs inside your session.
 
-Privacy: https://indahl.ai/privacy. Terms: https://indahl.ai/terms.
+## Privacy and terms
+
+Privacy: https://indahl.ai/privacy
+Terms: https://indahl.ai/terms
+
+Heuremen LLC, https://indahl.ai. Source: https://github.com/Heuremen-LLC/indahl.ai
 
 ## Credits
 

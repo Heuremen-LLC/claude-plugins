@@ -1,5 +1,5 @@
 ---
-description: How far before it breaks?
+description: "Find how far a key parameter can move before the conclusion fails"
 argument-hint: "<the report, draft or design to check>"
 ---
 

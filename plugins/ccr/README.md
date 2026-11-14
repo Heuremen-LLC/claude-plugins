@@ -1,6 +1,29 @@
 # Indahl CCR: Custody Chain Receipts
 
+`indahl-ccr`
+
 When something an agent touched goes wrong, the first question is who did it. Without a record, the answer lands on whoever acted last. This Claude Code plugin keeps a hash-chained record of what each session read, wrote, approved and released, so the answer comes from the record.
+
+## What you get
+
+- A hash-chained record in `.ccr/` of every prompt, tool call, denied call, file read and file write in a project.
+- Approvals bound to the hash of the file or lines that were reviewed.
+- A release check that reads SAME, MOVED, CHANGED, CANNOT_TELL or GAP for each approval and lists shipped lines no approval covered.
+- Attribution of who wrote a file, kept apart from the cause.
+
+## How to use
+
+Start a chain in the project, then use the commands as you work:
+
+```
+/ccr init
+/ccr approve src/report.py --lines 10-40
+/ccr release src/report.py
+/ccr why src/report.py
+/ccr verify
+```
+
+`/ccr anchor` writes the chain head to `.ccr/anchors.jsonl` for you to copy somewhere the agent cannot reach.
 
 ## What it records
 
@@ -55,7 +78,20 @@ Hooks that were switched off write nothing, so the chain still looks whole. `ver
 /plugin install indahl-ccr@heuremen
 ```
 
-Then in the project: `/ccr init`. Requires Python 3 (python3, or python on Windows). Nothing is sent anywhere. Everything stays in `.ccr/`.
+## Requirements
+
+Python 3 (`python3`, or `python` on Windows). Claude Code with hooks enabled.
+
+## Services this plugin contacts
+
+None. Nothing is sent anywhere. Everything stays in `.ccr/`.
+
+## Privacy and terms
+
+Privacy: https://indahl.ai/privacy
+Terms: https://indahl.ai/terms
+
+Heuremen LLC, https://indahl.ai. Source: https://github.com/Heuremen-LLC/indahl.ai
 
 ## Credits
 

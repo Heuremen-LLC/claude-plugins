@@ -1,7 +1,7 @@
 {
   "name": "indahl-rubicon",
   "version": "1.0.0",
-  "description": "Decide what done means before the work, freeze it, then judge the finished work with three blind seats. A two-to-one split stays UNRESOLVED with the minority's reason, a MET counts only where the agent's own rerun saw the check catch its planted wrong answer, and each seat tries to build a way the work passes every check and still fails. Returns MET, MISSED, UNRESOLVED or CANNOT_TELL. Nothing is sent outside your session.",
+  "description": "Decide what done means before the work, freeze it, then judge the finished work with three blind seats. A two-to-one split stays UNRESOLVED with the minority's reason. Returns MET, MISSED, UNRESOLVED or CANNOT_TELL. A record and a prompt, not a lock. Nothing is sent outside your session.",
   "author": {
     "name": "Heuremen LLC",
     "url": "https://indahl.ai"

@@ -1,7 +1,7 @@
 {
   "name": "indahl-margin",
   "version": "1.0.0",
-  "description": "For a sharp prediction, design or result, find how far its key parameter can move before the conclusion fails, and compare that margin with the parameter's own stated uncertainty. Returns ROBUST, FRAGILE (margin smaller than the uncertainty) or CANNOT_TELL, with the break point. Use before an expensive run, a preregistration, a launch decision, or when a result rests on one tuned number. Nothing is sent outside your session.",
+  "description": "For a sharp prediction, design or result, find how far its key parameter can move before the conclusion fails and compare that margin with the parameter's stated uncertainty. Returns ROBUST, FRAGILE or CANNOT_TELL with the break point. Runs inside your session.",
   "author": {
     "name": "Heuremen LLC",
     "url": "https://indahl.ai"
@@ -20,7 +20,7 @@
   "interface": {
     "displayName": "Indahl Margin",
     "shortDescription": "How far before it breaks?",
-    "longDescription": "For a sharp prediction, design or result, find how far its key parameter can move before the conclusion fails, and compare that margin with the parameter's own stated uncertainty. Returns ROBUST, FRAGILE (margin smaller than the uncertainty) or CANNOT_TELL, with the break point. Use before an expensive run, a preregistration, a launch decision, or when a result rests on one tuned number. Nothing is sent outside your session.",
+    "longDescription": "For a sharp prediction, design or result, find how far its key parameter can move before the conclusion fails and compare that margin with the parameter's stated uncertainty. Returns ROBUST, FRAGILE or CANNOT_TELL with the break point. Runs inside your session.",
     "developerName": "Heuremen LLC",
     "category": "Education & Research",
     "capabilities": [],

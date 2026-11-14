@@ -1,5 +1,7 @@
 # Indahl Rubicon
 
+`indahl-rubicon`
+
 Work can pass every check and still fail. Indahl Rubicon is a gate that asks for the four things that usually go missing, and keeps a record of whether they were done:
 
 | How it happens | What the gate asks for | Who shows it |
@@ -15,14 +17,23 @@ Outcomes: **MET**, **MISSED**, **UNRESOLVED**, **CANNOT_TELL**.
 
 **Rubicon is a record and a prompt, not a lock.** It interrupts the first attempt to finish and asks for the open rows to be reported. A second stop goes through, and an agent that edits `.rubicon/` can defeat it. It catches a careless "done", not a determined one.
 
-## Install
+## What you get
+
+- Criteria frozen with a hash before work starts, and a record of whether they changed afterward.
+- Three blind seats that judge the finished work, with a two-to-one split kept as UNRESOLVED and the minority's reason in the row.
+- A planted wrong answer per criterion, rerun before a MET counts.
+- One outcome per row: MET, MISSED, UNRESOLVED or CANNOT_TELL.
+- A Stop hook that interrupts the first attempt to finish while rows are open.
+
+## How to use
+
+Run `/rubicon` with the task in one sentence, for example:
 
 ```
-/plugin marketplace add Heuremen-LLC/indahl.ai
-/plugin install indahl-rubicon@heuremen
+/rubicon add rate limiting to the upload endpoint
 ```
 
-Then run `/rubicon <the task in one sentence>`.
+The skill freezes the criteria, does the work, runs the three-by-three grid and closes or acknowledges every open row.
 
 ## What is in it
 
@@ -38,9 +49,33 @@ An acknowledged row stays open in the record, with the reason beside it. Acknowl
 - Seats from one model share blind spots, so their agreement counts once, not three times. Every verdict records which seats were used and whether they ran independently.
 - The seats' answer on whether the person would call it done is a model's guess about the asker, not the asker. When it is not a unanimous yes, the skill asks the person and records their answer as its own row.
 
-Heuremen LLC, https://indahl.ai. Refereed before release by Sage, the outside referee on our work. MIT licence.
+## Install
+
+```
+/plugin marketplace add Heuremen-LLC/indahl.ai
+/plugin install indahl-rubicon@heuremen
+```
+
+## Requirements
+
+Python 3 (`python3`, or `python` on Windows). Standard library only.
+
+## Services this plugin contacts
+
+None. Nothing is sent anywhere. The record stays in `.rubicon/` in the working folder.
+
+## Privacy and terms
+
+Privacy: https://indahl.ai/privacy
+Terms: https://indahl.ai/terms
+
+Heuremen LLC, https://indahl.ai. Source: https://github.com/Heuremen-LLC/indahl.ai
+
+MIT licence.
 
 ## Credits
+
+Refereed before release by Sage, the outside referee on our work.
 
 Windows fix, 14 Nov 2026: Sage asked, Bones found and fixed. Sage, the outside referee on our work, asked whether `python3` resolves on Windows. Bones ran it on a Windows machine, found it was the Microsoft Store stub that runs nothing (exit 49), so the hook would fail without a word and the check would be silently off, and fixed it in every plugin hook. The hook now falls back to `python`.
 
