@@ -4,7 +4,7 @@
   "app_info": {
     "display_name": "Indahl Data",
     "subtitle": "Query every indahl.ai desk",
-    "description": "Live Heuremen LLC measurements inside Claude Code: every indahl.ai desk (IBM calibration, time servers, DNS filters, model licenses and sizes, flu forecasts, launch slips and more) through the read-only indahl.ai MCP server, quoted with interval, outcome and receipt. The agent is told to treat API responses as data, not instructions.",
+    "description": "Live Heuremen LLC measurements: every indahl.ai desk (IBM calibration, time servers, DNS filters, model licenses and sizes, flu forecasts, launch slips and more) through the read-only indahl.ai MCP server, quoted with interval, outcome and receipt. The agent is told to treat API responses as data, not instructions.",
     "category": "EDUCATION"
   },
   "tools": {

@@ -7,6 +7,7 @@ get openai/<name>.chatgpt-app-submission.json (every tool's hints and justificat
 Never edit openai/ by hand.   python3 build_openai.py"""
 import json, os, re, shutil, urllib.request, zipfile
 H = os.path.dirname(os.path.abspath(__file__)); P = os.path.join(H, 'plugins'); O = os.path.join(H, 'openai')
+DEMO_URL = os.environ.get('INDAHL_DEMO_URL', '')   # reviewer-accessible walkthrough video, required for MCP review
 ICONS = os.path.expanduser('~/bones-forge/cloudflare-workers/heuremen-door/public/icons')
 ORDER = ['indahl', 'indahl-data', 'standards', 'eval-check', 'reproduce', 'qia-calibration', 'darkwave-correction', 'prereg', 'readcheck', 'triangulate', 'batch', 'cannot-tell', 'both', 'outside-ruler', 'number-check', 'quote-check', 'source-check', 'controls', 'margin', 'correct', 'clause', 'silent-failure-guard', 'relay', 'eli5']
 SUB = {   # subtitle (30 characters or fewer) and three starter prompts per listing
@@ -49,7 +50,7 @@ def build(p):
     os.makedirs(os.path.join(dst, '.codex-plugin'), exist_ok=True); os.makedirs(os.path.join(dst, 'assets'), exist_ok=True)
     shutil.copy(os.path.join(ICONS, 'icon-512.png'), os.path.join(dst, 'assets', 'logo.png')); shutil.copy(os.path.join(ICONS, 'icon-192.png'), os.path.join(dst, 'assets', 'icon.png'))
     sub, prompts = SUB[p]; assert len(sub) <= 30, sub
-    desc = m['description']; has_mcp = os.path.exists(os.path.join(dst, '.mcp.json'))
+    desc = m['description'].replace(' inside Claude Code', '').replace('inside Claude Code', 'with the indahl.ai connector'); has_mcp = os.path.exists(os.path.join(dst, '.mcp.json'))
     man = {'name': name, 'version': m.get('version', '1.0.0'), 'description': desc, 'author': {'name': 'Heuremen LLC', 'url': 'https://indahl.ai'},
            'homepage': 'https://indahl.ai/plugins', 'repository': 'https://github.com/Heuremen-LLC/indahl.ai', 'license': m.get('license', 'SEE LICENSE'),
            'keywords': m.get('keywords', []), 'skills': './skills/',
@@ -57,7 +58,14 @@ def build(p):
                          'capabilities': [], 'websiteURL': 'https://indahl.ai', 'supportURL': 'https://indahl.ai/contact',
                          'privacyPolicyURL': 'https://indahl.ai/privacy', 'termsOfServiceURL': 'https://indahl.ai/terms', 'defaultPrompt': prompts,
                          'brandColor': '#111111', 'composerIcon': './assets/icon.png', 'logo': './assets/logo.png'}}
-    if has_mcp: man['mcpServers'] = './.mcp.json'
+    if has_mcp:
+        man['mcpServers'] = './.mcp.json'
+        # 14 Nov 2026: OpenAI imports review test cases from the package (extensions.com.openai.review), not the dashboard.
+        submission(name, desc); s = json.load(open(os.path.join(O, name + '.chatgpt-app-submission.json')))
+        rv = {'test_cases': {'positive': [{'description': c['description'], 'prompt': c['user_prompt'], 'tools_triggered': c['tools_triggered'], 'expected_behavior': c['expected_output']} for c in s['test_cases']],
+                             'negative': [{'description': c['description'], 'prompt': c['user_prompt'], 'expected_behavior': c['expected_output']} for c in s['negative_test_cases']]}}
+        if DEMO_URL: rv['demo_recording_url'] = DEMO_URL
+        man['extensions'] = {'com.openai': {'review': rv, 'publication': {'release_notes': 'First directory submission: %s %s.' % (listing_name(p), man['version'])}}}
     json.dump(man, open(os.path.join(dst, '.codex-plugin', 'plugin.json'), 'w'), indent=2)
     z = os.path.join(O, name + '.zip')
     with zipfile.ZipFile(z, 'w', zipfile.ZIP_DEFLATED) as zf:

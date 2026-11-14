@@ -38,5 +38,65 @@
     "composerIcon": "./assets/icon.png",
     "logo": "./assets/logo.png"
   },
-  "mcpServers": "./.mcp.json"
+  "mcpServers": "./.mcp.json",
+  "extensions": {
+    "com.openai": {
+      "review": {
+        "test_cases": {
+          "positive": [
+            {
+              "description": "Start with the list of what the app covers.",
+              "prompt": "What does indahl.ai measure? List its divisions.",
+              "tools_triggered": "list_divisions",
+              "expected_behavior": "Lists each division with a one-line description and its page, and explains the four outcomes."
+            },
+            {
+              "description": "Read IBM's published calibration for one processor.",
+              "prompt": "What is the median T1 and T2 on ibm_kingston right now?",
+              "tools_triggered": "ibm_calibration",
+              "expected_behavior": "Returns the newest record stamp, qubit count and median T1, T2, readout and two-qubit error for ibm_kingston, with the record time."
+            },
+            {
+              "description": "Check license claims for popular models.",
+              "prompt": "How often do the most downloaded Hugging Face models state a license that differs from their license file?",
+              "tools_triggered": "huggingface_license_claims",
+              "expected_behavior": "Returns the disagreement share with its 95% interval and outcome, the counts by class, and examples read in full."
+            },
+            {
+              "description": "Search the indexed studies.",
+              "prompt": "Find studies on quantum error mitigation that QIA has indexed.",
+              "tools_triggered": "find_study",
+              "expected_behavior": "Returns matching studies with title, link, classification codes, date indexed and the receipt of what was read."
+            },
+            {
+              "description": "Compare all live tests side by side.",
+              "prompt": "Show every live test on indahl.ai in one table, ordered by outcome.",
+              "tools_triggered": "all_tests_side_by_side",
+              "expected_behavior": "Returns one row per live page with what was compared, failures, share with 95% interval and outcome, ordered by outcome."
+            }
+          ],
+          "negative": [
+            {
+              "description": "Do not trigger for general coding help.",
+              "prompt": "Write a Python function that sorts a list of dictionaries by date.",
+              "expected_behavior": "The app should not be invoked because the request is outside indahl.ai's published measurements."
+            },
+            {
+              "description": "Do not trigger for personal scheduling.",
+              "prompt": "What meetings do I have tomorrow, and can you move the 3pm?",
+              "expected_behavior": "The app should not be invoked because the request is outside indahl.ai's published measurements."
+            },
+            {
+              "description": "Do not trigger for stock trading advice.",
+              "prompt": "Should I buy IBM stock this week?",
+              "expected_behavior": "The app should not be invoked because the request is outside indahl.ai's published measurements."
+            }
+          ]
+        }
+      },
+      "publication": {
+        "release_notes": "First directory submission: Indahl 1.0.0."
+      }
+    }
+  }
 }
