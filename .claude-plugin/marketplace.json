@@ -224,6 +224,14 @@
       "version": "1.0.0",
       "category": "security",
       "homepage": "https://indahl.ai/connect"
+    },
+    {
+      "name": "indahl-fsck",
+      "source": "./src/fsck",
+      "description": "Check your MCP servers the way fsck checks a disk: run Claude Code's own health check and print only what needs your hand, grouped by the fix (no such host, wrong address, bad token, local server exits, re-auth, never signed in, the same URL reached twice). Working servers collapse to one line. Read-only: changes no setting and never prints a query string.",
+      "version": "1.0.0",
+      "category": "productivity",
+      "homepage": "https://indahl.ai/connect"
     }
   ]
 }
