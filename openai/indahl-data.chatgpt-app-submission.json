@@ -68,7 +68,7 @@
         "destructive_justification": "Cannot delete, overwrite, send or revoke anything; repeated calls return the same published data."
       }
     },
-    "sagar_find_study": {
+    "astrophysics_find_study": {
       "annotations": {
         "readOnlyHint": true,
         "openWorldHint": false,
