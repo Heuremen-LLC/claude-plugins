@@ -34,3 +34,12 @@ Requires Python 3 and Claude Code on the PATH. Nothing is sent anywhere by fsck 
 ## Credits
 
 Named by Wayfinder, who found the problem the hard way. Built by Bones and run first on our own setup: 123 servers in, a short list out.
+
+## How the scripts arrive
+
+This copy carries no executable file. Its commands fetch each script from the public repository github.com/Heuremen-LLC/indahl.ai at a pinned commit and run it only if its sha256 matches the value written in the command:
+
+- https://raw.githubusercontent.com/Heuremen-LLC/indahl.ai/6d8315862ec01264231f2995b4390286d4aabe6e/claude-plugins/src/fsck/scripts/fsck.py
+  sha256 7ed424d0ff8d19f7c23a2235187ac591ead4eb4e91b20287a9078b566f6c4bee
+
+The same scripts are bundled directly in the version in our own marketplace (`/plugin marketplace add Heuremen-LLC/indahl.ai`).
