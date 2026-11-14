@@ -1,0 +1,20 @@
+{
+  "name": "indahl-eli5",
+  "version": "1.0.0",
+  "description": "Takes anything complex or technical (a paper, a result, a log, a contract, an error message, a plan) and says it again in plain language anyone can follow, without losing what is true: the numbers, how sure anyone is, and what is still unknown stay in. Built from a retired teacher's way of explaining. Nothing is sent outside your session.",
+  "author": {
+    "name": "Heuremen LLC",
+    "url": "https://indahl.ai"
+  },
+  "homepage": "https://indahl.ai/connect",
+  "repository": "https://github.com/Heuremen-LLC/indahl.ai",
+  "license": "MIT",
+  "keywords": [
+    "explain",
+    "plain-language",
+    "teaching",
+    "summary",
+    "accessibility"
+  ],
+  "icon": ".claude-plugin/icon.png"
+}
