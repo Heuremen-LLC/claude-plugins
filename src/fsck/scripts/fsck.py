@@ -6,8 +6,13 @@
   fsck.py --json     the same, as JSON
   fsck.py selftest
 
+`claude mcp list` drops a claude.ai connector that is failing (anthropics/claude-code#109864), so a list alone can't show that
+failure. fsck also reads the connectors Claude Code has ever connected (claudeAiMcpEverConnected in ~/.claude.json) and reports any
+of them missing from the list as NOT LISTED: failing, or removed on claude.ai. /mcp tells the two apart.
+
 Query strings in URLs are never printed, because a token can ride in one."""
 import json, re, subprocess, sys
+ROSTER_MISSING = False
 from collections import defaultdict, OrderedDict
 
 LINE = re.compile(r'^(?P<name>.+?): (?P<target>.+?) - (?P<mark>[✔!✘]) (?P<status>.*)$')
@@ -30,15 +35,25 @@ def classify(name, target, mark, status):
     if 'HTTP 5' in s or '502' in s or '503' in s: return 'SERVER DOWN', 'the server errors: remove it if it is retired, or retry later'
     return 'CANNOT_TELL', 'failed for a reason fsck does not recognise: ' + s[:120]
 
-ORDER = ['NOT CONFIGURED', 'NO SUCH HOST', 'WRONG ADDRESS', 'BAD TOKEN', 'LOCAL SERVER EXITS', 'HANDSHAKE REFUSED', 'SERVER DOWN', 'CANNOT_TELL', 'RE-AUTH', 'SIGN IN OR DISABLE']
+NOT_LISTED_FIX = 'a claude.ai connector Claude Code has connected before is missing from `claude mcp list`, which drops failing ones: open /mcp; if it shows ✘ it is failing, if it is gone you removed it'
 
-def check(text):
+def roster(path=None):
+    import os
+    try: return [n for n in json.load(open(path or os.path.expanduser('~/.claude.json'))).get('claudeAiMcpEverConnected', []) if n.startswith('claude.ai ')]
+    except Exception: return None
+
+ORDER = ['NOT LISTED', 'NOT CONFIGURED', 'NO SUCH HOST', 'WRONG ADDRESS', 'BAD TOKEN', 'LOCAL SERVER EXITS', 'HANDSHAKE REFUSED', 'SERVER DOWN', 'CANNOT_TELL', 'RE-AUTH', 'SIGN IN OR DISABLE']
+
+def check(text, known=None):
     rows = []
     for ln in text.splitlines():
         m = LINE.match(ln.strip())
         if not m: continue
         d = m.groupdict(); cat, fix = classify(d['name'], d['target'], d['mark'], d['status'])
         rows.append(dict(name=d['name'], target=redact(d['target']), state=cat, fix=fix))
+    listed = {r['name'] for r in rows}
+    for n in (known or []):
+        if n not in listed: rows.append(dict(name=n, target='', state='NOT LISTED', fix=NOT_LISTED_FIX))
     byurl = defaultdict(list)
     for r in rows:
         if r['target'].startswith('http'): byurl[r['target'].rstrip('/?…')].append(r['name'])
@@ -59,6 +74,7 @@ def report(rows, dups):
         else:
             out.append('%-20s %s' % (k, ' · '.join(x['name'].replace('plugin:', '').replace('claude.ai ', '') for x in rs)))
         out.append('%-20s → %s' % ('', rs[0]['fix'] if k != 'CANNOT_TELL' else 'see --json for each reason'))
+    if ROSTER_MISSING: out.append('%-20s %s' % ('NO ROSTER', 'could not read ~/.claude.json, so a failing claude.ai connector would not show (CANNOT_TELL for those)'))
     if dups:
         out.append('%-20s %s' % ('SAME URL TWICE', ' · '.join(' = '.join(n) for n in dups.values())))
         out.append('%-20s → %s' % ('', 'two entries reach one server: keep one, turn the other off'))
@@ -73,11 +89,13 @@ def selftest():
         'plugin:p:s: https://z.example/mcp (HTTP) - ✘ Failed to connect — HTTP 400: Authorization header is badly formatted',
         'plugin:p:t: npx thing - ✘ Failed to connect — CONNECTION_CLOSED: Connection closed', 'plugin:p:u: https://x.example/mcp (HTTP) - ! Needs authentication',
         'c: https://w.example - ✘ Failed to connect — something new'])
-    rows, dups = check(t); st = {r['name']: r['state'] for r in rows}; rep = report(rows, dups); bad = 0
-    for name, want in [('a', 'OK'), ('b', 'RE-AUTH'), ('plugin:p:q', 'NOT CONFIGURED'), ('plugin:p:r', 'NO SUCH HOST'), ('plugin:p:s', 'BAD TOKEN'), ('plugin:p:t', 'LOCAL SERVER EXITS'), ('plugin:p:u', 'SIGN IN OR DISABLE'), ('c', 'CANNOT_TELL')]:
+    rows, dups = check(t, known=['claude.ai Gone', 'claude.ai Up']); t = t + '\nclaude.ai Up: https://up.example/mcp - ✔ Connected'
+    rows, dups = check(t, known=['claude.ai Gone', 'claude.ai Up']); st = {r['name']: r['state'] for r in rows}; rep = report(rows, dups); bad = 0
+    for name, want in [('a', 'OK'), ('b', 'RE-AUTH'), ('plugin:p:q', 'NOT CONFIGURED'), ('plugin:p:r', 'NO SUCH HOST'), ('plugin:p:s', 'BAD TOKEN'), ('plugin:p:t', 'LOCAL SERVER EXITS'), ('plugin:p:u', 'SIGN IN OR DISABLE'), ('c', 'CANNOT_TELL'), ('claude.ai Gone', 'NOT LISTED'), ('claude.ai Up', 'OK')]:
         ok = st.get(name) == want; bad += not ok; print(('PASS ' if ok else 'FAIL ') + '%s reads %s' % (name, want) + ('' if ok else ' (got %s)' % st.get(name)))
     for n, c in [('a query-string token is never printed', 'SECRET' not in rep), ('one server reached twice is reported', any('a' in v and 'plugin:p:u' in v for v in dups.values())),
-                 ('empty input reads CANNOT_TELL, not all clear', 'CANNOT_TELL' in report([], {})), ('working servers collapse to one line', rep.count('\na ') == 0 and 'OK: 1' in rep)]:
+                 ('empty input reads CANNOT_TELL, not all clear', 'CANNOT_TELL' in report([], {})), ('working servers collapse to one line', rep.count('\na ') == 0 and 'OK: 2' in rep),
+                 ('a connector the list dropped is reported, not read as clean', 'NOT LISTED' in rep and 'Gone' in rep)]:
         bad += not c; print(('PASS ' if c else 'FAIL ') + n)
     print('selftest: %s' % ('all pass' if not bad else '%d FAILED' % bad)); return 1 if bad else 0
 
@@ -86,5 +104,6 @@ if __name__ == '__main__':
     if a[:1] == ['selftest']: sys.exit(selftest())
     js = '--json' in a; a = [x for x in a if x != '--json']
     text = open(a[0]).read() if a else subprocess.run(['claude', 'mcp', 'list'], capture_output=True, text=True, timeout=300).stdout
-    rows, dups = check(text)
+    known = roster(); ROSTER_MISSING = known is None
+    rows, dups = check(text, known)
     print(json.dumps(dict(servers=rows, same_url=dups), indent=1) if js else report(rows, dups))

@@ -2,7 +2,7 @@
 
 `indahl-fsck`
 
-Your MCP setup grows one connector and one plugin at a time, and Claude Code's list grows with it: past a hundred servers it is a wall of lines, and the broken ones hide among the working ones. Indahl fsck runs Claude Code's own health check (`claude mcp list`) and prints only what needs your hand, grouped by the fix:
+Your MCP setup grows one connector and one plugin at a time, and Claude Code's list grows with it: past a hundred servers it is a wall of lines, and the broken ones hide among the working ones. Indahl fsck runs Claude Code's own health check (`claude mcp list`) and prints only what needs your hand, grouped by the fix. It also catches the claude.ai connectors that list leaves out:
 
 ```
 NO SUCH HOST         Definely                    → turn the plugin off or remove the server
@@ -35,7 +35,7 @@ The second form reads a saved `claude mcp list` output.
 
 ## Limits
 
-- fsck sees what `claude mcp list` reports. In our own run, a failing claude.ai connector that `/mcp` showed was missing from `claude mcp list`, so fsck could not see it either. Compare with `/mcp` once.
+- `claude mcp list` leaves out a claude.ai connector that is failing ([anthropics/claude-code#109864](https://github.com/anthropics/claude-code/issues/109864)). fsck therefore also reads the claude.ai connectors Claude Code has connected before (`claudeAiMcpEverConnected` in `~/.claude.json`) and reports any that the list leaves out as NOT LISTED. That covers a failing connector and one you removed on claude.ai alike; `/mcp` tells them apart. If `~/.claude.json` can't be read, fsck says so instead of reading clean.
 - A server's state is the state at the moment of the check. A sign-in can expire a minute later.
 
 ## Install
@@ -66,9 +66,9 @@ Named by Wayfinder, who found the problem the hard way. Built by Bones and run f
 
 ## How the scripts arrive
 
-This copy carries no executable file. Its commands fetch each script from the public repository github.com/Heuremen-LLC/indahl.ai at a pinned commit and run it only if its sha256 matches the value written in the command:
+This copy carries no executable file. Its commands fetch each script from the public repository github.com/indahl-ai/indahl.ai at a pinned commit and run it only if its sha256 matches the value written in the command:
 
-- https://raw.githubusercontent.com/Heuremen-LLC/indahl.ai/6d8315862ec01264231f2995b4390286d4aabe6e/claude-plugins/src/fsck/scripts/fsck.py
-  sha256 7ed424d0ff8d19f7c23a2235187ac591ead4eb4e91b20287a9078b566f6c4bee
+- https://raw.githubusercontent.com/indahl-ai/indahl.ai/c9dc1f1f2107df3bac082d97d6e1a7bf4d89fd59/claude-plugins/src/fsck/scripts/fsck.py
+  sha256 7db9510eefcadc5c1a957e1c570529476853d6045f9dfa4b5f8764826387b250
 
-The same scripts are bundled directly in the version in our own marketplace (`/plugin marketplace add Heuremen-LLC/indahl.ai`).
+The same scripts are bundled directly in the version in our own marketplace (`/plugin marketplace add indahl-ai/indahl.ai`).

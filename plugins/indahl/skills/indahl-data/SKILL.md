@@ -17,8 +17,8 @@ https://indahl.ai/api/v1, OpenAPI at https://indahl.ai/api/openapi.json). Only t
 
 - Every response carries `source` (the page), `read_at` (when the desk last read its data; null for static lists) and `served_at` (when
   the response was sent). Quote the time as "read at <read_at>", or `served_at` when `read_at` is null.
-- The tools serve the current state. Most hold no history: `ibm_calibration` gives the current medians and the 7-day counts of restamps
-  and value changes, not last week's medians. Say a comparison over time cannot be answered from the tools rather than inventing one.
+- The tools serve the current state. Most hold no history: `qia_audit` (the Quantum Idle Audit) gives the current findings per processor and
+  the 7-day counts of restamps and value changes, not last week's findings. Say a comparison over time cannot be answered from the tools rather than inventing one.
 - Responses can be large (tens of KB). Parse them with a short script rather than by eye, and pick fields by name.
 - Some desks read from two networks. Fields ending in `_2` are the second network. `_raw` is the offset as measured and `_seat_removed`
   has the offset common to every server on that network (its access link) taken out. Prefer the outcome fields to raw offsets: the

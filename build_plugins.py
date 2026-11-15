@@ -14,7 +14,7 @@ matching published copy keeps its old pin and is reported STALE (ship first, the
   python3 build_plugins.py [--pin]"""
 import hashlib, json, os, re, shutil, subprocess, sys, urllib.request, filecmp
 H = os.path.dirname(os.path.abspath(__file__)); SRC = os.path.join(H, 'src'); P = os.path.join(H, 'plugins'); PINS = os.path.join(H, 'pins.json')
-REPO = 'Heuremen-LLC/indahl.ai'; RAW = 'https://raw.githubusercontent.com/' + REPO + '/{commit}/{path}'
+REPO = 'indahl-ai/indahl.ai'; RAW = 'https://raw.githubusercontent.com/' + REPO + '/{commit}/{path}'
 # 14 Nov 2026: built from the marketplace, not a hand list (indahl-rubicon and indahl-spend-cap were missing from the old list, so no directory copy was ever made)
 PARTS = [e['source'].split('/src/', 1)[1] for e in json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), '.claude-plugin', 'marketplace.json')))['plugins'] if e.get('source', '').startswith('./src/')]
 _OLD_PARTS = ['standards', 'eval-check', 'indahl-data', 'qia-calibration', 'reproduce', 'darkwave-correction', 'prereg', 'readcheck', 'triangulate', 'batch', 'cannot-tell', 'both', 'outside-ruler', 'number-check', 'quote-check', 'source-check', 'controls', 'margin', 'correct', 'clause', 'silent-failure-guard', 'relay']
@@ -84,12 +84,12 @@ def directory_copy(p, pins):
             else: shutil.copy2(os.path.join(d, f), out)
     if p == 'readcheck':   # the commit gate is a command hook; the directory copy keeps the check commands only
         rp = os.path.join(dst, 'README.md')
-        open(rp, 'a' if os.path.exists(rp) else 'w').write('\n## In this copy\n\nThe plugin directory accepts command hooks only from Verified organizations, so this copy has the check commands and not the automatic commit gate. The full plugin, gate included, installs from our marketplace: `/plugin marketplace add Heuremen-LLC/indahl.ai` then `/plugin install indahl-readcheck@heuremen`.\n')
+        open(rp, 'a' if os.path.exists(rp) else 'w').write('\n## In this copy\n\nThe plugin directory accepts command hooks only from Verified organizations, so this copy has the check commands and not the automatic commit gate. The full plugin, gate included, installs from our marketplace: `/plugin marketplace add indahl-ai/indahl.ai` then `/plugin install indahl-readcheck@heuremen`.\n')
     if local:
         rp = os.path.join(dst, 'README.md'); t = open(rp).read() if os.path.exists(rp) else f'# indahl-{p}\n'
-        t += '\n## How the scripts arrive\n\nThis copy carries no executable file. Its commands fetch each script from the public repository github.com/Heuremen-LLC/indahl.ai at a pinned commit and run it only if its sha256 matches the value written in the command:\n\n'
+        t += '\n## How the scripts arrive\n\nThis copy carries no executable file. Its commands fetch each script from the public repository github.com/indahl-ai/indahl.ai at a pinned commit and run it only if its sha256 matches the value written in the command:\n\n'
         t += ''.join(f'- {pv["url"]}\n  sha256 {pv["sha256"]}\n' for _, pv, _ in local.values())
-        t += '\nThe same scripts are bundled directly in the version in our own marketplace (`/plugin marketplace add Heuremen-LLC/indahl.ai`).\n'
+        t += '\nThe same scripts are bundled directly in the version in our own marketplace (`/plugin marketplace add indahl-ai/indahl.ai`).\n'
         open(rp, 'w').write(t)
     missing = [rel for rel in scripts() if rel.startswith(p + '/') and rel not in pins]
     if missing: print(f'  plugins/{p}: NO PIN for {missing} (run --pin after the scripts are published)')
