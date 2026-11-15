@@ -68,11 +68,11 @@ def build(p):
         man['extensions'] = {'com.openai': {'review': rv, 'publication': {'release_notes': 'First directory submission: %s %s.' % (listing_name(p), man['version'])}}}
     json.dump(man, open(os.path.join(dst, '.codex-plugin', 'plugin.json'), 'w'), indent=2)
     z = os.path.join(O, name + '.zip')
-    with zipfile.ZipFile(z, 'w', zipfile.ZIP_DEFLATED) as zf:
-        for d, _, fs in os.walk(dst):
-            for f in fs:
-                if f == '.DS_Store': continue
-                fp = os.path.join(d, f); zf.write(fp, os.path.relpath(fp, dst))
+    files = sorted(os.path.relpath(os.path.join(d, f), dst) for d, _, fs in os.walk(dst) for f in fs if f != '.DS_Store')
+    with zipfile.ZipFile(z, 'w', zipfile.ZIP_DEFLATED) as zf:   # 14 Nov: deterministic (fixed time, sorted, fixed mode), so an unchanged plugin makes a byte-identical zip and no new commit
+        for rel in files:
+            zi = zipfile.ZipInfo(rel, date_time=(2026, 1, 1, 0, 0, 0)); zi.external_attr = 0o644 << 16; zi.compress_type = zipfile.ZIP_DEFLATED
+            zf.writestr(zi, open(os.path.join(dst, rel), 'rb').read())
     return name, has_mcp, desc
 
 def submission(name, desc):
