@@ -1,0 +1,32 @@
+OK indahl-source-check from GitHub ce27bdc
+OK indahl-silent-failure-guard from GitHub 7ffa9d4
+OK indahl-rubicon from GitHub a00bd10
+OK indahl-relay from GitHub d07a5ef
+OK indahl-both from GitHub f857af9
+OK indahl-readcheck from GitHub b197b8d
+OK indahl-cannot-tell from GitHub c8d9e1a
+FAIL upload indahl.ai
+OK indahl-triangulate from GitHub 9b2fb0c
+OK indahl-spend-cap from GitHub 5981318
+OK indahl-fsck from GitHub 46d662c
+OK indahl-darkwave from GitHub 33ce2e8
+OK indahl from GitHub 88eca24
+OK indahl-standards from GitHub 84d6f16
+OK indahl-eli5 from GitHub 1d38a45
+OK indahl-correct from GitHub 5a0f8a9
+OK indahl-clause from GitHub 4fab8d7
+OK indahl-ccr from GitHub 85d8de7
+OK claude-plugins from GitHub 07dd459
+OK indahl-reproduce from GitHub 33c55cf
+OK indahl-outside-ruler from GitHub 117cdf6
+OK indahl-margin from GitHub 90817f4
+OK indahl-prereg from GitHub 4c73134
+OK indahl-quote-check from GitHub 5e80ea1
+OK indahl-qia-calibration from GitHub 400ecb0
+OK indahl-eval-check from GitHub 45415b2
+OK indahl-data from GitHub 0b639f5
+OK indahl-controls from GitHub de62400
+OK indahl-batch from GitHub c0bb7b2
+OK indahl-number-check from GitHub b6f4cf6
+OK indahl-full from GitHub dcd5b6f
+EXIT 0

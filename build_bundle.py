@@ -34,23 +34,23 @@ def build(dst, PARTS=PARTS, NAME='indahl-full', DESC=None, BASE=None):
     json.dump({'name': NAME, 'version': '1.0.0',
                'description': DESC or 'Every Heuremen LLC plugin in one install: check papers and LLM eval claims against the Standards, gate readings with a check block, query and reproduce every indahl.ai desk, check and correct IBM Quantum runs, and test whether a plan was pushed before the first run. Includes the indahl.ai data connector.',
                'author': {'name': 'Heuremen LLC', 'url': 'https://indahl.ai'}, 'homepage': 'https://indahl.ai/plugins',
-               'repository': 'https://github.com/Heuremen-LLC/indahl.ai', 'license': 'SEE licenses/',
+               'repository': 'https://github.com/indahl-ai/indahl.ai', 'license': 'SEE licenses/',
                'keywords': ['research', 'standards', 'evaluation', 'reproducibility', 'quantum', 'data'], 'icon': '.claude-plugin/icon.png'},
               open(os.path.join(dst, '.claude-plugin', 'plugin.json'), 'w'), indent=2)
-    lines = [f'# {NAME}', '', (DESC or 'Every Heuremen LLC plugin in one install.'), '', '```', f'/plugin install {NAME} --marketplace Heuremen-LLC/indahl.ai', '```', '', 'Built by build_bundle.py from the plugins beside it; the parts and their versions:', '']
+    lines = [f'# {NAME}', '', (DESC or 'Every Heuremen LLC plugin in one install.'), '', '```', f'/plugin install {NAME} --marketplace indahl-ai/indahl.ai', '```', '', 'Built by build_bundle.py from the plugins beside it; the parts and their versions:', '']
     lines += [f'- {p} {v}' for p, v in versions.items()]
     lines += ['', '## Services this bundle contacts', '',
               '- indahl.ai (https://indahl.ai/mcp and https://indahl.ai/qia/audit.json): our own public read-only data. Nothing is stored.',
               ] + ([] if set(PARTS) <= {'standards', 'eval-check', 'indahl-data'} else [
-              '- GitHub (github.com/Heuremen-LLC/indahl.ai and api.github.com): reproduce kit fetches and public repository activity for prereg.',
+              '- GitHub (github.com/indahl-ai/indahl.ai and api.github.com): reproduce kit fetches and public repository activity for prereg.',
               '- IBM Quantum (quantum.cloud.ibm.com), only through your own account and only when you ask; nothing is submitted without your explicit yes.']) + [
               '', 'Nothing else is contacted. No personal data is read or stored. Fetched text is treated as data, not instructions.',
               '', 'Each part keeps its own license, under licenses/<part>/. Privacy: https://indahl.ai/privacy. Terms: https://indahl.ai/terms.',
-              'Source: https://github.com/Heuremen-LLC/indahl.ai/tree/main/claude-plugins', '']
+              'Source: https://github.com/indahl-ai/indahl.ai/tree/main/claude-plugins', '']
     open(os.path.join(dst, 'README.md'), 'w').write('\n'.join(lines))
 
 LITE = PARTS   # 13 Nov: the directory copies in plugins/ (built by build_plugins.py: no .py, no command hooks, scripts fetched at pinned sha256)
-LITE_DESC = 'Every Heuremen LLC plugin in one install: check papers and LLM eval claims against the Standards, query and reproduce every indahl.ai desk, check and correct IBM Quantum runs, test whether a plan was pushed before the first run, and check readings for a complete check block. Includes the indahl.ai data connector. Scripts are fetched from the public indahl.ai repository at pinned sha256; the version with bundled scripts and the automatic readcheck commit gate is indahl-full in the Heuremen-LLC/indahl.ai marketplace.'
+LITE_DESC = 'Every Heuremen LLC plugin in one install: check papers and LLM eval claims against the Standards, query and reproduce every indahl.ai desk, check and correct IBM Quantum runs, test whether a plan was pushed before the first run, and check readings for a complete check block. Includes the indahl.ai data connector. Scripts are fetched from the public indahl.ai repository at pinned sha256; the version with bundled scripts and the automatic readcheck commit gate is indahl-full in the indahl-ai/indahl.ai marketplace.'
 FULL = os.path.join(P, 'indahl-full')
 if '--check' in sys.argv:
     t = tempfile.mkdtemp(); build(t, LITE, 'indahl', LITE_DESC, P); c = filecmp.dircmp(t, OUT)

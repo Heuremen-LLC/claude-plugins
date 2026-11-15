@@ -117,5 +117,5 @@ The user can rerun the same block later and diff the two receipts; a changed out
 
 ## With the indahl.ai connector
 
-If the indahl-data connector is available, a seat may use its tools (for example `list_divisions`, `find_study`, `ibm_calibration`,
+If the indahl-data connector is available, a seat may use its tools (for example `list_divisions`, `find_study`, `qia_audit`,
 `all_tests_side_by_side`) as source material. Every number taken from it keeps its receipt link in the seat's answer.

@@ -52,7 +52,7 @@ def build(p):
     sub, prompts = SUB[p]; assert len(sub) <= 30, sub
     desc = m['description'].replace(' inside Claude Code', '').replace('inside Claude Code', 'with the indahl.ai connector'); has_mcp = os.path.exists(os.path.join(dst, '.mcp.json'))
     man = {'name': name, 'version': m.get('version', '1.0.0'), 'description': desc, 'author': {'name': 'Heuremen LLC', 'url': 'https://indahl.ai'},
-           'homepage': 'https://indahl.ai/plugins', 'repository': 'https://github.com/Heuremen-LLC/indahl.ai', 'license': m.get('license', 'SEE LICENSE'),
+           'homepage': 'https://indahl.ai/plugins', 'repository': 'https://github.com/indahl-ai/indahl.ai', 'license': m.get('license', 'SEE LICENSE'),
            'keywords': m.get('keywords', []), 'skills': './skills/',
            'interface': {'displayName': listing_name(p), 'shortDescription': sub, 'longDescription': desc, 'developerName': 'Heuremen LLC', 'category': CAT,
                          'capabilities': [], 'websiteURL': 'https://indahl.ai', 'supportURL': 'https://indahl.ai/contact',
@@ -87,7 +87,7 @@ def submission(name, desc):
                                            'open_world_justification': ("Reads public records at the source the person names (Crossref, arXiv, PyPI, GitHub or Hugging Face) to answer, and never writes to the internet or to any third-party system." if ow else "Reads only indahl.ai's own public data and never writes to the internet or to any third-party system."),
                                            'destructive_justification': 'Cannot delete, overwrite, send or revoke anything; repeated calls return the same published data.'}}
     pos = [('Start with the list of what the app covers.', 'What does indahl.ai measure? List its divisions.', 'list_divisions', 'Lists each division with a one-line description and its page, and explains the four outcomes.'),
-           ("Read IBM's published calibration for one processor.", 'What is the median T1 and T2 on ibm_kingston right now?', 'ibm_calibration', 'Returns the newest record stamp, qubit count and median T1, T2, readout and two-qubit error for ibm_kingston, with the record time.'),
+           ('Run the Quantum Idle Audit on one IBM processor.', 'What does the Quantum Idle Audit find on ibm_kingston right now?', 'qia_audit', 'Returns the audit of IBM\'s newest published record for ibm_kingston: qubits past the 2 x T1 bound, T1 and T2 dated apart, restamps with no value change and how often T1 and T2 are measured again, each beside IBM\'s stated figure, with the four outcomes.'),
            ('Check license claims for popular models.', 'How often do the most downloaded Hugging Face models state a license that differs from their license file?', 'huggingface_license_claims', 'Returns the disagreement share with its 95% interval and outcome, the counts by class, and examples read in full.'),
            ('Search the indexed studies.', 'Find studies on quantum error mitigation that QIA has indexed.', 'find_study', 'Returns matching studies with title, link, classification codes, date indexed and the receipt of what was read.'),
            ('Compare all live tests side by side.', 'Show every live test on indahl.ai in one table, ordered by outcome.', 'all_tests_side_by_side', 'Returns one row per live page with what was compared, failures, share with 95% interval and outcome, ordered by outcome.')]

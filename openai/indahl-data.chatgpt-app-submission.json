@@ -44,7 +44,7 @@
         "destructive_justification": "Cannot delete, overwrite, send or revoke anything; repeated calls return the same published data."
       }
     },
-    "ibm_calibration": {
+    "qia_audit": {
       "annotations": {
         "readOnlyHint": true,
         "openWorldHint": false,
@@ -153,42 +153,6 @@
       }
     },
     "link_rot": {
-      "annotations": {
-        "readOnlyHint": true,
-        "openWorldHint": false,
-        "destructiveHint": false
-      },
-      "justifications": {
-        "read_only_justification": "Only retrieves indahl.ai's own published measurements for this desk and returns them; nothing is created, changed or stored.",
-        "open_world_justification": "Reads only indahl.ai's own public data and never writes to the internet or to any third-party system.",
-        "destructive_justification": "Cannot delete, overwrite, send or revoke anything; repeated calls return the same published data."
-      }
-    },
-    "ibm_queue": {
-      "annotations": {
-        "readOnlyHint": true,
-        "openWorldHint": false,
-        "destructiveHint": false
-      },
-      "justifications": {
-        "read_only_justification": "Only retrieves indahl.ai's own published measurements for this desk and returns them; nothing is created, changed or stored.",
-        "open_world_justification": "Reads only indahl.ai's own public data and never writes to the internet or to any third-party system.",
-        "destructive_justification": "Cannot delete, overwrite, send or revoke anything; repeated calls return the same published data."
-      }
-    },
-    "ibm_stability": {
-      "annotations": {
-        "readOnlyHint": true,
-        "openWorldHint": false,
-        "destructiveHint": false
-      },
-      "justifications": {
-        "read_only_justification": "Only retrieves indahl.ai's own published measurements for this desk and returns them; nothing is created, changed or stored.",
-        "open_world_justification": "Reads only indahl.ai's own public data and never writes to the internet or to any third-party system.",
-        "destructive_justification": "Cannot delete, overwrite, send or revoke anything; repeated calls return the same published data."
-      }
-    },
-    "ibm_audit": {
       "annotations": {
         "readOnlyHint": true,
         "openWorldHint": false,
@@ -560,6 +524,18 @@
         "destructive_justification": "Cannot delete, overwrite, send or revoke anything; repeated calls return the same published data."
       }
     },
+    "paper_statistics": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": true,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Only retrieves indahl.ai's own published measurements for this desk and returns them; nothing is created, changed or stored.",
+        "open_world_justification": "Reads public records at the source the person names (Crossref, arXiv, PyPI, GitHub or Hugging Face) to answer, and never writes to the internet or to any third-party system.",
+        "destructive_justification": "Cannot delete, overwrite, send or revoke anything; repeated calls return the same published data."
+      }
+    },
     "check_reported_statistics": {
       "annotations": {
         "readOnlyHint": true,
@@ -631,11 +607,11 @@
       "expected_output_url": null
     },
     {
-      "description": "Read IBM's published calibration for one processor.",
-      "user_prompt": "What is the median T1 and T2 on ibm_kingston right now?",
+      "description": "Run the Quantum Idle Audit on one IBM processor.",
+      "user_prompt": "What does the Quantum Idle Audit find on ibm_kingston right now?",
       "file_attachment_urls": null,
-      "tools_triggered": "ibm_calibration",
-      "expected_output": "Returns the newest record stamp, qubit count and median T1, T2, readout and two-qubit error for ibm_kingston, with the record time.",
+      "tools_triggered": "qia_audit",
+      "expected_output": "Returns the audit of IBM's newest published record for ibm_kingston: qubits past the 2 x T1 bound, T1 and T2 dated apart, restamps with no value change and how often T1 and T2 are measured again, each beside IBM's stated figure, with the four outcomes.",
       "expected_output_url": null
     },
     {

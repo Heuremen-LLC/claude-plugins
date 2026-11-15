@@ -2,7 +2,7 @@
 
 `indahl-fsck`
 
-Your MCP setup grows one connector and one plugin at a time, and Claude Code's list grows with it: past a hundred servers it is a wall of lines, and the broken ones hide among the working ones. Indahl fsck runs Claude Code's own health check (`claude mcp list`) and prints only what needs your hand, grouped by the fix:
+Your MCP setup grows one connector and one plugin at a time, and Claude Code's list grows with it: past a hundred servers it is a wall of lines, and the broken ones hide among the working ones. Indahl fsck runs Claude Code's own health check (`claude mcp list`) and prints only what needs your hand, grouped by the fix. It also catches the claude.ai connectors that list leaves out:
 
 ```
 NO SUCH HOST         Definely                    → turn the plugin off or remove the server
@@ -35,7 +35,7 @@ The second form reads a saved `claude mcp list` output.
 
 ## Limits
 
-- fsck sees what `claude mcp list` reports. In our own run, a failing claude.ai connector that `/mcp` showed was missing from `claude mcp list`, so fsck could not see it either. Compare with `/mcp` once.
+- `claude mcp list` leaves out a claude.ai connector that is failing ([anthropics/claude-code#109864](https://github.com/anthropics/claude-code/issues/109864)). fsck therefore also reads the claude.ai connectors Claude Code has connected before (`claudeAiMcpEverConnected` in `~/.claude.json`) and reports any that the list leaves out as NOT LISTED. That covers a failing connector and one you removed on claude.ai alike; `/mcp` tells them apart. If `~/.claude.json` can't be read, fsck says so instead of reading clean.
 - A server's state is the state at the moment of the check. A sign-in can expire a minute later.
 
 ## Install

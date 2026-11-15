@@ -103,9 +103,9 @@ Sage also caught, before release: the duplicate-message key that collapsed id-le
 
 ## How the scripts arrive
 
-This copy carries no executable file. Its commands fetch each script from the public repository github.com/Heuremen-LLC/indahl.ai at a pinned commit and run it only if its sha256 matches the value written in the command:
+This copy carries no executable file. Its commands fetch each script from the public repository github.com/indahl-ai/indahl.ai at a pinned commit and run it only if its sha256 matches the value written in the command:
 
 - https://raw.githubusercontent.com/Heuremen-LLC/indahl.ai/952786ff9c9c54e28489b26e6a176e98c20a45ea/claude-plugins/src/spend-cap/scripts/spend_cap.py
   sha256 196a19a093d6b2eef25ba412c85b34d4759a2fec7f8dc0016c23d3cb83a8c7cb
 
-The same scripts are bundled directly in the version in our own marketplace (`/plugin marketplace add Heuremen-LLC/indahl.ai`).
+The same scripts are bundled directly in the version in our own marketplace (`/plugin marketplace add indahl-ai/indahl.ai`).

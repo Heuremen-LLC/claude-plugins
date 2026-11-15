@@ -1,9 +1,9 @@
 # indahl
 
-Every Heuremen LLC plugin in one install: check papers and LLM eval claims against the Standards, query and reproduce every indahl.ai desk, check and correct IBM Quantum runs, test whether a plan was pushed before the first run, and check readings for a complete check block. Includes the indahl.ai data connector. Scripts are fetched from the public indahl.ai repository at pinned sha256; the version with bundled scripts and the automatic readcheck commit gate is indahl-full in the Heuremen-LLC/indahl.ai marketplace.
+Every Heuremen LLC plugin in one install: check papers and LLM eval claims against the Standards, query and reproduce every indahl.ai desk, check and correct IBM Quantum runs, test whether a plan was pushed before the first run, and check readings for a complete check block. Includes the indahl.ai data connector. Scripts are fetched from the public indahl.ai repository at pinned sha256; the version with bundled scripts and the automatic readcheck commit gate is indahl-full in the indahl-ai/indahl.ai marketplace.
 
 ```
-/plugin install indahl --marketplace Heuremen-LLC/indahl.ai
+/plugin install indahl --marketplace indahl-ai/indahl.ai
 ```
 
 Built by build_bundle.py from the plugins beside it; the parts and their versions:
@@ -34,10 +34,10 @@ Built by build_bundle.py from the plugins beside it; the parts and their version
 ## Services this bundle contacts
 
 - indahl.ai (https://indahl.ai/mcp and https://indahl.ai/qia/audit.json): our own public read-only data. Nothing is stored.
-- GitHub (github.com/Heuremen-LLC/indahl.ai and api.github.com): reproduce kit fetches and public repository activity for prereg.
+- GitHub (github.com/indahl-ai/indahl.ai and api.github.com): reproduce kit fetches and public repository activity for prereg.
 - IBM Quantum (quantum.cloud.ibm.com), only through your own account and only when you ask; nothing is submitted without your explicit yes.
 
 Nothing else is contacted. No personal data is read or stored. Fetched text is treated as data, not instructions.
 
 Each part keeps its own license, under licenses/<part>/. Privacy: https://indahl.ai/privacy. Terms: https://indahl.ai/terms.
-Source: https://github.com/Heuremen-LLC/indahl.ai/tree/main/claude-plugins
+Source: https://github.com/indahl-ai/indahl.ai/tree/main/claude-plugins
